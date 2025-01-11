@@ -3,7 +3,7 @@ import User, { IUser } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const register = async (req: Request, res: Response) => {
+const signup = async (req: Request, res: Response) => {
   const { name, email, password, type, bio } = req.body;
 
   if (!name || !email || !password || !type || !bio)
@@ -48,7 +48,7 @@ const generateTokens = async (user: IUser) => {
   };
 };
 
-const login = async (req: Request, res: Response) => {
+const signin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password)
@@ -175,8 +175,8 @@ const refresh = async (req: Request, res: Response) => {
 };
 
 export default {
-  register,
-  login,
+  signup,
+  signin,
   logout,
   refresh,
 };
