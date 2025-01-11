@@ -1,16 +1,17 @@
 import express from "express";
-import cityController from "../controllers/city.controller";
+import chatController from "../controllers/chat.controller";
 import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", authMiddleware, cityController.getCityOverview);
-router.post("/", authMiddleware, cityController.create.bind(cityController));
-router.put("/:id", authMiddleware, cityController.putById.bind(cityController));
+router.get("/:id", authMiddleware, chatController.getChat);
+router.get("/user/userId", authMiddleware, chatController.getChatByUser);
+router.post("/", authMiddleware, chatController.create.bind(chatController));
+router.put("/:id", authMiddleware, chatController.putById.bind(chatController));
 router.delete(
   "/:id",
   authMiddleware,
-  cityController.deleteById.bind(cityController)
+  chatController.deleteById.bind(chatController)
 );
 
 export default router;
