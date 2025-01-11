@@ -9,7 +9,7 @@ export class BaseController<ModelType> {
 
   getAll = async (req: Request, res: Response, selectFields?: string[]) => {
     try {
-      const model = await this.model.find().select(selectFields);
+      const model = await this.model.find().select(selectFields || {});
 
       if (model.length === 0) {
         return res.status(404).json({ message: "Model not found" });
@@ -26,7 +26,7 @@ export class BaseController<ModelType> {
       const id = req.params.id;
       const query = id ? { _id: id } : {};
 
-      const model = await this.model.find(query).select(selectFields);
+      const model = await this.model.find(query).select(selectFields || {});
 
       if (model.length === 0) {
         return res.status(404).json({ message: "Model not found" });

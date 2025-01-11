@@ -13,15 +13,15 @@ import volunteerRouter from "./volunteer.router";
 
 // Export the base-router
 const baseRouter = Router();
-baseRouter.use("/chats", chatRouter);
-baseRouter.use("/cities", cityRouter);
-baseRouter.use("/comments", commentRouter);
-baseRouter.use("/focus-areas", focusAreaRouter);
-baseRouter.use("/organizations", organizationRouter);
-baseRouter.use("/posts", postRouter);
+// baseRouter.use("/chats", chatRouter);
+// baseRouter.use("/cities", cityRouter);
+// baseRouter.use("/comments", commentRouter);
+// baseRouter.use("/focus-areas", focusAreaRouter);
+// baseRouter.use("/organizations", organizationRouter);
+// baseRouter.use("/posts", postRouter);
 baseRouter.use("/roles", roleRouter);
-baseRouter.use("/skills", skillRouter);
-baseRouter.use("/users", userRouter);
-baseRouter.use("/volunteers", volunteerRouter);
+// baseRouter.use("/skills", skillRouter);
+// baseRouter.use("/users", userRouter);
+// baseRouter.use("/volunteers", volunteerRouter);
 
 export default baseRouter;

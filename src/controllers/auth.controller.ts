@@ -37,9 +37,15 @@ export class AuthController<ModelType> {
   };
 
   generateTokens = async (user: IUser) => {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
     const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRATION,
     });
+    if (!process.env.JWT_REFRESH_SECRET) {
+      throw new Error("JWT_REFRESH_SECRET is not defined");
+    }
     const refreshToken = jwt.sign(
       { _id: user._id },
       process.env.JWT_REFRESH_SECRET
@@ -95,7 +101,7 @@ export class AuthController<ModelType> {
     if (refreshToken == null) return res.sendStatus(401);
     jwt.verify(
       refreshToken,
-      process.env.JWT_REFRESH_SECRET,
+      process.env.JWT_REFRESH_SECRET as string,
       async (err, user: { _id: string }) => {
         if (err) {
           return res.sendStatus(401);
