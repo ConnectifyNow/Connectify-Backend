@@ -8,7 +8,7 @@ dotenv.config();
 
 const initApp = async (): Promise<Express> => {
   try {
-    await mongoose.connect(process.env.DB_URL);
+    await mongoose.connect(process.env.DB_URL ?? "");
     console.log("Connected to DB");
     const app = express();
 

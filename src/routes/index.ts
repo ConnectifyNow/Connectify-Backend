@@ -5,11 +5,11 @@ import cityRouter from "./city.router";
 import commentRouter from "./comment.router";
 import focusAreaRouter from "./focusArea.router";
 import organizationRouter from "./organization.router";
-import postRouter from "./post.router";
-import roleRouter from "./role.router";
+// import postRouter from "./post.router";
+// import roleRouter from "./role.router";
 import skillRouter from "./skill.router";
 import userRouter from "./user.router";
-import volunteerRouter from "./volunteer.router";
+// import volunteerRouter from "./volunteer.router";
 
 // Export the base-router
 const baseRouter = Router();
@@ -18,10 +18,10 @@ baseRouter.use("/cities", cityRouter);
 baseRouter.use("/comments", commentRouter);
 baseRouter.use("/focus-areas", focusAreaRouter);
 baseRouter.use("/organizations", organizationRouter);
-baseRouter.use("/posts", postRouter);
-baseRouter.use("/roles", roleRouter);
+// baseRouter.use("/posts", postRouter);
+// baseRouter.use("/roles", roleRouter);
 baseRouter.use("/skills", skillRouter);
 baseRouter.use("/users", userRouter);
-baseRouter.use("/volunteers", volunteerRouter);
+// baseRouter.use("/volunteers", volunteerRouter);
 
 export default baseRouter;
