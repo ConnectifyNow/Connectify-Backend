@@ -1,5 +1,5 @@
 import { Router } from "express";
-// import authRouter from "./auth.router";
+import authRouter from "./auth.router";
 import chatRouter from "./chat.router";
 import cityRouter from "./city.router";
 import commentRouter from "./comment.router";
@@ -21,7 +21,7 @@ baseRouter.use("/comments", commentRouter);
 baseRouter.use("/focus-areas", focusAreaRouter);
 baseRouter.use("/organizations", organizationRouter);
 baseRouter.use("/posts", postRouter);
-baseRouter.use("/roles", roleRouter); 
+baseRouter.use("/roles", roleRouter);
 baseRouter.use("/skills", skillRouter);
 baseRouter.use("/users", userRouter);
 baseRouter.use("/volunteers", volunteerRouter);

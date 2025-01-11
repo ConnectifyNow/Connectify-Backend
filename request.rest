@@ -36,7 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmN
 
 ### Get All skills
 GET http://localhost:3000/api/skills
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzQ0OTMsImV4cCI6MTczNjYzODA5M30.l6c11EaIpPLEHjgNIcAVukn928GIJw3mdX2tC7vmA6c
 
 ### Get skill by ID
 GET http://localhost:3000/api/skills/6782ea1ca4039393f74f2490
@@ -44,11 +44,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmN
 
 ### Create a new skill
 POST http://localhost:3000/api/skills
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
 Content-Type: application/json
 
 {
-  "name": "JavaScript"
+  "name": "Vue"
 }
 
 ### Update a skill by ID
