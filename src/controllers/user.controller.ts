@@ -1,28 +1,33 @@
 import UserModel, { IUser } from "../models/user";
 import { Request, Response } from "express";
-import { createController } from "./base.controller";
+import { BaseController, createController } from "./base.controller";
+import { Model } from "mongoose";
 
-const userController = createController<IUser>(UserModel);
+export class UserController extends BaseController<IUser> {
+  constructor(model: Model<IUser>) {
+    super(model);
+  }
 
-export const getUserOverview = async (req: Request, res: Response) => {
-  if (req.params.id) {
-    return userController.getById(req, res, [
+  getUserOverview = async (req: Request, res: Response) => {
+    if (req.params.id) {
+      return userController.getById(req, res, [
+        "_id",
+        "name",
+        "email",
+        //   "image",
+        "bio",
+        "type",
+      ]);
+    }
+    return userController.getAll(req, res, [
       "_id",
       "name",
       "email",
-      //   "image",
+      // "image",
       "bio",
       "type",
     ]);
-  }
-  return userController.getAll(req, res, [
-    "_id",
-    "name",
-    "email",
-    // "image",
-    "bio",
-    "type",
-  ]);
-};
-
+  };
+}
+const userController = new UserController(UserModel);
 export default userController;
