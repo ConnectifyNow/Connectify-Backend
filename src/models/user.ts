@@ -33,11 +33,6 @@ const userSchema = new mongoose.Schema<IUser>({
     type: [String],
     required: false,
   },
-  type: {
-    type: String,
-    required: true,
-    enum: ["association", "student", "unknown"],
-  },
   //   image: {
   //     originalName: { type: String, required: false },
   //     serverFilename: { type: String, required: false },
