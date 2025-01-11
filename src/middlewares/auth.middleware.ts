@@ -19,8 +19,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (token == null) return res.sendStatus(401);
   verifyToken(token, (err: any, user: { _id: string }) => {
     if (err) return res.sendStatus(401);
-
-    req.user = user as { _id: string };
+    (req as any).user = user as { _id: string };
     next();
   });
 };
