@@ -8,7 +8,7 @@ router.get("/:id?", authMiddleware, commentController.getCommentById);
 router.get(
   "/post/:postId",
   authMiddleware,
-  commentController.getCommentsByPost
+  commentController.getCommentsByPostId
 );
 router.post(
   "/",
@@ -18,12 +18,12 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
-  commentController.updateComment.bind(commentController)
+  commentController.putById.bind(commentController)
 );
 router.delete(
   "/:id",
   authMiddleware,
-  commentController.deleteComment.bind(commentController)
+  commentController.deleteById.bind(commentController)
 );
 
 export default router;
