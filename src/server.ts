@@ -22,6 +22,7 @@ initApp().then((app) => {
   };
   const specs = swaggerJsDoc(options);
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
-  app.listen(process.env.PORT);
-  console.log(`Running on port ${process.env.PORT}`);
+  app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server started on port ${process.env.PORT || 3000}`);
+  });
 });

@@ -10,7 +10,7 @@ const DB_URL: string = process.env.DB_URL || "";
 
 const initApp = async (): Promise<Express> => {
   try {
-    await mongoose.connect(DB_URL);
+    await mongoose.connect(process.env.DB_URL ?? "");
     console.log("Connected to DB");
     const app = express();
 
