@@ -4,9 +4,7 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", authMiddleware, cityController.getCityOverview);
-router.post("/", authMiddleware, cityController.create.bind(cityController));
-router.put("/:id", authMiddleware, cityController.putById.bind(cityController));
-router.delete("/:id", authMiddleware, cityController.deleteById.bind(cityController));
+router.get("/", authMiddleware, cityController.getCitiesOverview);
+router.get("/:id", authMiddleware, cityController.getCitiesByUserId);
 
 export default router;
