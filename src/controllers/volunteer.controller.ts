@@ -12,42 +12,44 @@ export class VolunteerController extends BaseController<IVolunteer> {
   getVolunteerOverview = async (req: Request, res: Response) => {
     if (req.params.id) {
       return volunteerController.getById(req, res, [
-        "_id",
+        "phone",
+        "firstName",
+        "lastName",
         "city",
-        "name",
-        "description",
+        "age",
+        "skills",
         "imageUrl",
+        "about",
         "userId",
-        "focusAreas",
-        "websiteLink",
       ]);
     }
     return volunteerController.getAll(req, res, [
-      "_id",
+      "phone",
+      "firstName",
+      "lastName",
       "city",
-      "name",
-      "description",
+      "age",
+      "skills",
       "imageUrl",
+      "about",
       "userId",
-      "focusAreas",
-      "websiteLink",
     ]);
   };
 
-  getOrganizationsByUserId = async (req: Request, res: Response) => {
+  getVolunteersByUserId = async (req: Request, res: Response) => {
     try {
       const userId = req.params.userId;
 
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).send({ error: "userId isn't valid" });
       }
-      const organizations = await VolunteerModel.find({ userId });
-      if (organizations.length === 0) {
+      const volunteers = await VolunteerModel.find({ userId });
+      if (volunteers.length === 0) {
         return res
           .status(404)
-          .json({ message: "No organizations found for this user" });
+          .json({ message: "No volunteers found for this user" });
       }
-      return res.status(200).json(organizations);
+      return res.status(200).json(volunteers);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
