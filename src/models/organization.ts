@@ -3,10 +3,10 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IOrganization extends Document {
   city: number;
   name: string;
-  description?: string;
-  imageUrl?: string;
   userId: string;
   focusAreas: number[];
+  description?: string;
+  imageUrl?: string;
   websiteLink?: string;
 }
 

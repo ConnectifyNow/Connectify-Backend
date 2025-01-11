@@ -7,7 +7,7 @@ export class BaseController<ModelType> {
     this.model = model;
   }
 
-  async getAll(req: Request, res: Response, selectFields?: string[]) {
+  getAll = async (req: Request, res: Response, selectFields?: string[]) => {
     try {
       const model = await this.model.find().select(selectFields);
 
@@ -19,9 +19,9 @@ export class BaseController<ModelType> {
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  }
+  };
 
-  async getById(req: Request, res: Response, selectFields?: string[]) {
+  getById = async (req: Request, res: Response, selectFields?: string[]) => {
     try {
       const id = req.params.id;
       const query = id ? { _id: id } : {};
@@ -36,18 +36,18 @@ export class BaseController<ModelType> {
     } catch (err) {
       res.status(500).json(err.message);
     }
-  }
+  };
 
-  async create(req: Request, res: Response) {
+  create = async (req: Request, res: Response) => {
     try {
       const obj = await this.model.create(req.body);
       res.status(201).send(obj);
     } catch (err) {
       res.status(500).send(err.message);
     }
-  }
+  };
 
-  async deleteById(req: Request, res: Response) {
+  deleteById = async (req: Request, res: Response) => {
     try {
       const id = req.params.id;
 
@@ -59,9 +59,9 @@ export class BaseController<ModelType> {
     } catch (err) {
       res.status(500).json(err.message);
     }
-  }
+  };
 
-  async putById(req: Request, res: Response) {
+  putById = async (req: Request, res: Response) => {
     try {
       const id = req.params.id;
       const updateFields = req.body;
@@ -80,7 +80,7 @@ export class BaseController<ModelType> {
     } catch (err) {
       res.status(500).json(err.message);
     }
-  }
+  };
 }
 
 const createController = <ModelType>(model: Model<ModelType>) => {
