@@ -14,35 +14,9 @@ export class CityController extends BaseController<ICity> {
     }
     return cityController.getAll(req, res, ["_id", "name"]);
   };
-  //   async create(req: Request, res: Response) {
-  //     try {
-  //       const { user } = req;
-  //       req.body = { ...req.body, userId: user._id };
 
-  //       const newCity = await super.create(req, res);
-  //       res.status(200).send(newCity);
-  //     } catch (err) {
-  //       res.status(500).json({ message: err.message });
-  //     }
-  //   }
-
-  getCitiesByUserId = async (req: Request, res: Response) => {
-    try {
-      const userId = req.params.userId;
-
-      if (!mongoose.isValidObjectId(userId)) {
-        return res.status(400).send({ error: "userId isn't valid" });
-      }
-      const cities = await CityModel.find({ userId });
-      if (cities.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No cities found for this user" });
-      }
-      return res.status(200).json(cities);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
+  createCity = async (req: Request, res: Response) => {
+    return cityController.create(req, res);
   };
 }
 
