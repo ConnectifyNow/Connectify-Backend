@@ -8,10 +8,10 @@ export interface IMessage extends Document {
 }
 
 const MessageSchema: Schema = new Schema({
-  userId: { type: Schema.Types.UUID, ref: "User", required: true },
-  chatId: { type: Schema.Types.UUID, ref: "Chat", required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
   text: { type: String, required: true },
-  date: { type: Date, default: Date.now },
+  date: { type: Date, default: Date.now }
 });
 
 export default mongoose.model<IMessage>("Message", MessageSchema);

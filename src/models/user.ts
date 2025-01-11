@@ -1,46 +1,38 @@
 import mongoose, { Document } from "mongoose";
+import { Role } from "../types";
 
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
-  name: string;
+  username: string;
   email: string;
-  password?: string;
+  password: string;
   refreshTokens: string[];
-  type: "association" | "student" | "unknown";
-  //   image?: {
-  //     originalName?: string;
-  //     serverFilename?: string;
-  //   };
-  bio: string;
+  role: Role;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
-  name: {
+  username: {
     type: String,
-    required: true,
+    required: true
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    lowercase: true,
+    lowercase: true
   },
   password: {
     type: String,
-    required: false,
+    required: false
   },
   refreshTokens: {
     type: [String],
-    required: false,
+    required: false
   },
-  //   image: {
-  //     originalName: { type: String, required: false },
-  //     serverFilename: { type: String, required: false },
-  //   },
-  bio: {
-    type: String,
-    required: true,
-  },
+  role: {
+    type: Number,
+    required: true
+  }
 });
 
 const UserModel = mongoose.model<IUser>("User", userSchema);

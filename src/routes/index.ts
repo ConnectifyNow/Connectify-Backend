@@ -13,6 +13,7 @@ import userRouter from "./user.router";
 
 // Export the base-router
 const baseRouter = Router();
+baseRouter.use("/auth", authRouter);
 baseRouter.use("/chats", chatRouter);
 baseRouter.use("/cities", cityRouter);
 baseRouter.use("/comments", commentRouter);
