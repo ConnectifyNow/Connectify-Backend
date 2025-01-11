@@ -37,7 +37,7 @@ export class OrganizationController extends BaseController<IOrganization> {
     try {
       const userId = req.params.userId;
 
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
+      if (!mongoose.isValidObjectId(userId)) {
         return res.status(400).send({ error: "userId isn't valid" });
       }
       const organizations = await OrganizationModel.find({ userId });

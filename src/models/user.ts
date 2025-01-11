@@ -5,7 +5,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password?: string;
-  refreshTokens: string[];
+  // refreshTokens: string[];
   type: "association" | "student" | "unknown";
   //   image?: {
   //     originalName?: string;
@@ -29,10 +29,10 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: false,
   },
-  refreshTokens: {
-    type: [String],
-    required: false,
-  },
+  // refreshTokens: {
+  //   type: [String],
+  //   required: false,
+  // },
   //   image: {
   //     originalName: { type: String, required: false },
   //     serverFilename: { type: String, required: false },
