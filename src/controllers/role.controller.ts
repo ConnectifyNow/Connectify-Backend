@@ -9,6 +9,7 @@ export class RoleController extends BaseController<IRole> {
   }
 
   getRoleOverview = async (req: Request, res: Response) => {
+    console.log("getRoleOverview");
     if (req.params.id) {
       return roleController.getById(req, res, ["_id", "name"]);
     }

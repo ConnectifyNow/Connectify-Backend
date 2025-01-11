@@ -5,6 +5,5 @@ import authMiddleware from "../middlewares/auth.middleware";
 const router = express.Router();
 
 router.get("/", cityController.getCitiesOverview);
-router.get("/user/:id", cityController.getCitiesByUserId);
-
+router.post("/", cityController.createCity);
 export default router;
