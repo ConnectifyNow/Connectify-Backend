@@ -111,6 +111,26 @@ export class PostController extends BaseController<IPost> {
       res.status(500).json({ message: err.message });
     }
   }
+
+  getLikesByPostId = async (req: Request, res: Response) => {
+    try {
+      const postId = req.params.postId;
+      if (!mongoose.Types.UUID.isValid(postId)) {
+        return res.status(400).send({ error: "Invalid post id format" });
+      }
+      if (!postId) {
+        return res.status(400).send({ error: "Post id is required" });
+      }
+      const post = await PostModel.findById(postId);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      return res.status(200).json(post.likes);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
 }
 
 const postController = new PostController(PostModel);
