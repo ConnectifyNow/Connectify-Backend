@@ -2,26 +2,26 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IVolunteer extends Document {
   phone: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   city: number;
   age: number;
   skills: number[];
-  image_url?: string;
+  imageUrl?: string;
   about?: string;
-  user_id: string;
+  userId: string;
 }
 
 const VolunteerSchema: Schema = new Schema({
   phone: { type: String, required: true },
-  first_name: { type: String, required: true },
-  last_name: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   city: { type: Number, ref: "City", required: true },
   age: { type: Number },
   skills: [{ type: Number, ref: "Skill", required: true }],
-  image_url: { type: String },
+  imageUrl: { type: String },
   about: { type: String },
-  user_id: { type: Schema.Types.UUID, ref: "User", required: true },
+  userId: { type: Schema.Types.UUID, ref: "User", required: true },
 });
 
 export default mongoose.model<IVolunteer>("Volunteer", VolunteerSchema);
