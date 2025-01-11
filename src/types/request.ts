@@ -1,9 +1,11 @@
-import * as express from "express";
+import { Request } from "express";
 
 declare global {
   namespace Express {
-    export interface Request {
-      user?: { _id: string }; // Make user property optional
+    interface Request {
+      user?: {
+        _id: string;
+      };
     }
   }
 }

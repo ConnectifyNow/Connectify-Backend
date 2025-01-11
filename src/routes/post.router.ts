@@ -1,13 +1,15 @@
 import express from "express";
-import roleController from "../controllers/role.controller";
+import postController from "../controllers/post.controller";
 import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", roleController.getRoleOverview);
-// router.get("/user/:userId", authMiddleware, roleController.getPostsByUserId);
-router.post("/", roleController.create.bind(roleController));
-router.put("/:id", roleController.putById.bind(roleController));
-router.delete("/:id", roleController.deleteById.bind(roleController));
-
+router.get("/:id?", postController.getPostsOverview);
+router.post("/", postController.create.bind(postController));
+router.put("/:id", postController.putById.bind(postController));
+router.delete("/:id", postController.deleteById.bind(postController));
+router.get("/user/:userId", postController.getPostsByUserId);
+router.post("/comment", postController.addComment);
+router.put("/like/:userId", postController.likePost);
+router.get("/likes/:postId", postController.getLikesByPostId);
 export default router;
