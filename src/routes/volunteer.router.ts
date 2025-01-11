@@ -5,6 +5,11 @@ import authMiddleware from "../middlewares/auth.middleware";
 const router = express.Router();
 
 router.get("/:id?", authMiddleware, volunteerController.getVolunteerOverview);
+router.get(
+  "/user/:userId",
+  authMiddleware,
+  volunteerController.getVolunteersByUserId
+);
 router.post(
   "/",
   authMiddleware,

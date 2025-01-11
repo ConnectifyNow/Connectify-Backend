@@ -9,6 +9,11 @@ router.get(
   authMiddleware,
   organizationController.getOrganizationOverview
 );
+router.get(
+  "/user/:userId",
+  authMiddleware,
+  organizationController.getOrganizationsByUserId
+);
 router.post(
   "/",
   authMiddleware,
