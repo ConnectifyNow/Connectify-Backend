@@ -4,7 +4,7 @@ export interface IOrganization extends Document {
   city: number;
   name: string;
   description?: string;
-  image_url?: string;
+  imageUrl?: string;
   userId: string;
   focusAreas: number[];
   websiteLink?: string;
