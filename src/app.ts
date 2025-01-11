@@ -6,6 +6,8 @@ import BaseRouter from "./routes/index";
 
 dotenv.config();
 
+const DB_URL: string = process.env.DB_URL || "";
+
 const initApp = async (): Promise<Express> => {
   try {
     await mongoose.connect(process.env.DB_URL ?? "");

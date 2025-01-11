@@ -25,9 +25,23 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: false
   },
+<<<<<<< HEAD
   refreshTokens: {
     type: [String],
     required: false
+=======
+  // refreshTokens: {
+  //   type: [String],
+  //   required: false,
+  // },
+  //   image: {
+  //     originalName: { type: String, required: false },
+  //     serverFilename: { type: String, required: false },
+  //   },
+  bio: {
+    type: String,
+    required: true,
+>>>>>>> c0b4629115478e58867b7ce530afbd4cdf3e2f7a
   },
   role: {
     type: Number,

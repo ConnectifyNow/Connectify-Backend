@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const verifyToken = (
   token: string,
   callback: (err: any, user: { _id: string }) => void
 ) => {
-  jwt.verify(token, process.env.JWT_SECRET, callback);
+  jwt.verify(token, JWT_SECRET);
 };
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
