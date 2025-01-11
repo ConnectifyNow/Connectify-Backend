@@ -26,7 +26,7 @@ export class CityController extends BaseController<ICity> {
   //     }
   //   }
 
-  async getCitiesByUserId(req: Request, res: Response) {
+  getCitiesByUserId = async (req: Request, res: Response) => {
     try {
       const userId = req.params.userId;
 
@@ -43,7 +43,7 @@ export class CityController extends BaseController<ICity> {
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  }
+  };
 }
 
 const cityController = new CityController(CityModel);
