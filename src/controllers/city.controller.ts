@@ -30,7 +30,7 @@ export class CityController extends BaseController<ICity> {
     try {
       const userId = req.params.userId;
 
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
+      if (!mongoose.isValidObjectId(userId)) {
         return res.status(400).send({ error: "userId isn't valid" });
       }
       const cities = await CityModel.find({ userId });
