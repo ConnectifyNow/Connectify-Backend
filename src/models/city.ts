@@ -8,4 +8,5 @@ const CitySchema: Schema = new Schema({
   name: { type: String, required: true },
 });
 
-export default mongoose.model<ICity>("City", CitySchema);
+const CityModel = mongoose.model<ICity>("City", CitySchema);
+export default CityModel;
