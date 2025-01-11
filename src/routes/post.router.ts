@@ -1,5 +1,5 @@
 import express from "express";
-import roleController from "../controllers/role.controller";
+import postController from "../controllers/post.controller";
 import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
