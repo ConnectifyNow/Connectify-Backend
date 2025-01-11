@@ -7,6 +7,6 @@
     "sourceMap": true,
     "outDir": "./dist"
   },
-  "files": ["src/types/request.ts"],
-  "lib": ["es2015"]
+  "lib": ["es2015"],
+  "files": ["src/types/request.ts"]
 }

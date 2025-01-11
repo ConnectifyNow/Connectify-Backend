@@ -16,18 +16,30 @@ const signup = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({
-      name,
-      email,
-      password: encryptedPassword,
-      type,
-      bio,
+  generateTokens = async (user: IUser) => {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+    const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRATION,
     });
-    return res.status(201).send(user);
-  } catch (err) {
-    return res.status(500).send(err.message);
-  }
-};
+    if (!process.env.JWT_REFRESH_SECRET) {
+      throw new Error("JWT_REFRESH_SECRET is not defined");
+    }
+    const refreshToken = jwt.sign(
+      { _id: user._id },
+      process.env.JWT_REFRESH_SECRET
+    );
+
+    if (user.refreshTokens == null) user.refreshTokens = [refreshToken];
+    else user.refreshTokens.push(refreshToken);
+
+    await user.save();
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
+  };
 
 const generateTokens = async (user: IUser) => {
   const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -48,38 +60,18 @@ const generateTokens = async (user: IUser) => {
   };
 };
 
-const signin = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  logout = async (req: Request, res: Response) => {
+    const authHeader = req.headers.authorization;
+    const refreshToken = authHeader && authHeader.split(" ")[1]; // Bearer <token>
 
-  if (!email || !password)
-    return res.status(400).send("missing email or password");
-
-  try {
-    const user = await User.findOne({ email: email });
-    if (user == null)
-      return res.status(401).send("email or password incorrect");
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).send("email or password incorrect");
-
-    const tokens = await generateTokens(user);
-
-    return res.status(200).send({
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-      user: {
-        _id: user._id,
-        type: user.type,
-        name: user.name,
-        email: user.email,
-        // image: user.image,
-        bio: user.bio,
-      },
-    });
-  } catch (err) {
-    return res.status(500).send(err.message);
-  }
-};
+    if (refreshToken == null) return res.sendStatus(401);
+    jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET as string,
+      async (err, user: { _id: string }) => {
+        if (err) {
+          return res.sendStatus(401);
+        }
 
 const logout = async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
@@ -180,4 +172,5 @@ export default {
   signup,
   logout,
   refresh,
+  
 };
