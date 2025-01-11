@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose, { Model } from "mongoose";
+import { Model } from "mongoose";
 import RoleModel, { IRole } from "../models/role";
 import { BaseController } from "./base.controller";
 
