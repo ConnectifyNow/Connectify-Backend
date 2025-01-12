@@ -4,11 +4,24 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", organizationController.getOrganizationOverview);
-router.post("/", organizationController.create.bind(organizationController));
-router.put("/:id", organizationController.putById.bind(organizationController));
+router.get(
+  "/:id?",
+  authMiddleware,
+  organizationController.getOrganizationOverview
+);
+router.post(
+  "/",
+  authMiddleware,
+  organizationController.create.bind(organizationController)
+);
+router.put(
+  "/:id",
+  authMiddleware,
+  organizationController.putById.bind(organizationController)
+);
 router.delete(
   "/:id",
+  authMiddleware,
   organizationController.deleteById.bind(organizationController)
 );
 

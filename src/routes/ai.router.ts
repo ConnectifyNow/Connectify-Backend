@@ -4,6 +4,6 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:orgName", aiController.getAiDescription);
+router.get("/:orgName", authMiddleware, aiController.getAiDescription);
 
 export default router;

@@ -9,10 +9,10 @@ export interface IComment extends Document {
 }
 
 const CommentSchema: Schema = new Schema({
-  userId: { type: Schema.Types.UUID, ref: "User", required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   postId: { type: Schema.Types.ObjectId, ref: "Post", required: true },
   text: { type: String, required: true },
-  likes: [{ type: Schema.Types.UUID, ref: "User" }],
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }]
 });
 
 export default mongoose.model<IComment>("Comment", CommentSchema);

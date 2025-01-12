@@ -4,14 +4,22 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:postId?", postController.getPostsOverview);
-router.post("/", postController.create.bind(postController));
-router.put("/:id", postController.putById.bind(postController));
-router.delete("/:id", postController.deleteById.bind(postController));
-router.get("/user/:userId", postController.getPostsByUserId);
-router.post("/comment/:postId", postController.addComment);
-router.put("/like/:userId", postController.likePost);
-router.get("/likes/:postId", postController.getLikesByPostId);
-router.get("/comments/:postId", postController.getPostWithComments);
+router.get("/:postId?", authMiddleware, postController.getPostsOverview);
+router.post("/", authMiddleware, postController.create.bind(postController));
+router.put("/:id", authMiddleware, postController.putById.bind(postController));
+router.delete(
+  "/:id",
+  authMiddleware,
+  postController.deleteById.bind(postController)
+);
+router.get("/user/:userId", authMiddleware, postController.getPostsByUserId);
+router.post("/comment/:postId", authMiddleware, postController.addComment);
+router.put("/like/:userId", authMiddleware, postController.likePost);
+router.get("/likes/:postId", authMiddleware, postController.getLikesByPostId);
+router.get(
+  "/comments/:postId",
+  authMiddleware,
+  postController.getPostWithComments
+);
 
 export default router;

@@ -13,15 +13,15 @@ export interface IVolunteer extends Document {
 }
 
 const VolunteerSchema: Schema = new Schema({
-  phone: { type: String, required: true },
+  phone: { type: String },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  city: { type: Number, ref: "City", required: true },
+  city: { type: Number, ref: "City" },
   age: { type: Number },
-  skills: [{ type: Number, ref: "Skill", required: true }],
+  skills: [{ type: Number, ref: "Skill" }],
   imageUrl: { type: String },
   about: { type: String },
-  userId: { type: Schema.Types.UUID, ref: "User", required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }
 });
 
 export default mongoose.model<IVolunteer>("Volunteer", VolunteerSchema);

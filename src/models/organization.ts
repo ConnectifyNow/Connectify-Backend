@@ -15,9 +15,9 @@ const OrganizationSchema: Schema = new Schema({
   name: { type: String, required: true },
   description: { type: String },
   imageUrl: { type: String },
-  userId: { type: Schema.Types.UUID, ref: "User", required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   focusAreas: [{ type: Number, ref: "FocusArea" }],
-  websiteLink: { type: String },
+  websiteLink: { type: String }
 });
 
 export default mongoose.model<IOrganization>(

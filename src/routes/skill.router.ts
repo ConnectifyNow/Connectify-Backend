@@ -4,9 +4,17 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", skillController.getSkillOverview);
-router.post("/", skillController.create.bind(skillController));
-router.put("/:id", skillController.putById.bind(skillController));
-router.delete("/:id", skillController.deleteById.bind(skillController));
+router.get("/:id?", authMiddleware, skillController.getSkillOverview);
+router.post("/", authMiddleware, skillController.create.bind(skillController));
+router.put(
+  "/:id",
+  authMiddleware,
+  skillController.putById.bind(skillController)
+);
+router.delete(
+  "/:id",
+  authMiddleware,
+  skillController.deleteById.bind(skillController)
+);
 
 export default router;

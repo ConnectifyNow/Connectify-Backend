@@ -1,6 +1,6 @@
 import UserModel, { IUser } from "../models/user";
 import { Request, Response } from "express";
-import { BaseController, createController } from "./base.controller";
+import { BaseController } from "./base.controller";
 import { Model } from "mongoose";
 
 export class UserController extends BaseController<IUser> {
@@ -16,7 +16,7 @@ export class UserController extends BaseController<IUser> {
         "email",
         //   "image",
         "bio",
-        "type",
+        "type"
       ]);
     }
     return userController.getAll(req, res, [
@@ -25,7 +25,7 @@ export class UserController extends BaseController<IUser> {
       "email",
       // "image",
       "bio",
-      "type",
+      "type"
     ]);
   };
 }

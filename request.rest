@@ -1,16 +1,15 @@
-# Signup
+### SignUp
 POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-  "name": "New User",
-  "email": "newuser@example.com",
+  "username": "New User",
+  "email": "newuser3@example.com",
   "password": "password",
-  "type": "student",
-  "bio": "New user bio"
+  "role": 0
 }
 
-# Signin
+### Login a user
 POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
@@ -19,5 +18,48 @@ Content-Type: application/json
   "password": "password"
 }
 
-### GET
-GET http://localhost:3000/api/ai/etaym
+### Chat Routes
+
+### Get all chat IDs
+GET http://localhost:3000/api/chats/6782eae383bc2bf38ce78a50
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+### Get chats by user ID
+GET http://localhost:3000/api/chats/user/6782def65a30b06310406d42
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+### Get messages by chat ID
+GET http://localhost:3000/api/chats/6782def65a30b06310406d42/messages
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+### Skill Routes
+
+### Get All skills
+GET http://localhost:3000/api/skills
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzQ0OTMsImV4cCI6MTczNjYzODA5M30.l6c11EaIpPLEHjgNIcAVukn928GIJw3mdX2tC7vmA6c
+
+### Get skill by ID
+GET http://localhost:3000/api/skills/6782ea1ca4039393f74f2490
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+
+### Create a new skill
+POST http://localhost:3000/api/skills
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+Content-Type: application/json
+
+{
+  "name": "Vue"
+}
+
+### Update a skill by ID
+PUT http://localhost:3000/api/skills/6782e9e9a4039393f74f2489
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+Content-Type: application/json
+
+{
+  "name": "TypeScript"
+}
+
+### Delete a skill by ID
+DELETE http://localhost:3000/api/skills/6782e9e9a4039393f74f2489
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
