@@ -17,7 +17,7 @@ const PostSchema: Schema = new Schema({
   imageUrl: { type: String },
   content: { type: String, required: true },
   date: { type: String },
-  comments: [{ type: Schema.Types.UUID, ref: "Comment" }],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   requiredSkills: [{ type: Number, ref: "Skill", required: true }],
   likes: [{ type: Schema.Types.UUID, ref: "User" }],
 });

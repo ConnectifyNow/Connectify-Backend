@@ -56,7 +56,7 @@ export class PostController extends BaseController<IPost> {
   addComment = async (req: Request, res: Response) => {
     try {
       const postId = req.params.postId;
-      if (!mongoose.Types.UUID.isValid(postId)) {
+      if (!mongoose.Types.ObjectId.isValid(postId)) {
         return res.status(400).send({ error: "Invalid post id format" });
       }
       if (!postId) {
@@ -67,8 +67,11 @@ export class PostController extends BaseController<IPost> {
         return res.status(404).json({ message: "Post not found" });
       }
 
-      const comment = await CommentModel.create({...req.body, postId: postId, likes: []});
-
+      const comment = await CommentModel.create({
+        ...req.body,
+        postId: postId,
+        likes: [],
+      });
       post.comments.push(comment._id.toString());
       await post.save();
 
@@ -110,7 +113,7 @@ export class PostController extends BaseController<IPost> {
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  }
+  };
 
   getLikesByPostId = async (req: Request, res: Response) => {
     try {
@@ -130,7 +133,22 @@ export class PostController extends BaseController<IPost> {
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  }
+  };
+
+  getPostWithComments = async (req: Request, res: Response) => {
+    try {
+      const postId = req.params.postId;
+
+      const post = await PostModel.findById(postId).populate("comments").exec();
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      return res.status(200).json(post);
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  };
 }
 
 const postController = new PostController(PostModel);
