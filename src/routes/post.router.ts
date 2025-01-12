@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", authMiddleware, postController.getPostsOverview);
+router.get("/:postId?", authMiddleware, postController.getPostsOverview);
 router.post("/", authMiddleware, postController.create.bind(postController));
 router.put("/:id", authMiddleware, postController.putById.bind(postController));
 router.delete(
@@ -13,7 +13,13 @@ router.delete(
   postController.deleteById.bind(postController)
 );
 router.get("/user/:userId", authMiddleware, postController.getPostsByUserId);
-router.post("/comment", authMiddleware, postController.addComment);
+router.post("/comment/:postId", authMiddleware, postController.addComment);
 router.put("/like/:userId", authMiddleware, postController.likePost);
 router.get("/likes/:postId", authMiddleware, postController.getLikesByPostId);
+router.get(
+  "/comments/:postId",
+  authMiddleware,
+  postController.getPostWithComments
+);
+
 export default router;
