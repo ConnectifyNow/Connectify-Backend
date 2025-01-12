@@ -4,20 +4,23 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import { Role } from "../types";
+import Volunteer from "../models/volunteer";
+import Organization from "../models/organization";
 
 const client = new OAuth2Client();
 
 const logInGoogle = async (req: Request, res: Response) => {
-  const idToken = "Understand How To Get The Token";
+  const { credentialResponse } = req.body;
+  const credential = credentialResponse.credential;
 
   try {
     const ticket = await client.verifyIdToken({
-      idToken,
+      idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID
     });
     const payload = ticket.getPayload();
 
-    const { name, email } = payload;
+    const { name, email, given_name, family_name, picture } = payload;
 
     let user = await User.findOne({ email: email });
 
@@ -27,7 +30,16 @@ const logInGoogle = async (req: Request, res: Response) => {
         email,
         role: Role.Volunteer
       });
+
+      await Volunteer.create({
+        userId: user._id,
+        firstName: given_name,
+        lastName: family_name,
+        imageUrl: picture
+      });
     }
+
+    const volunteer = await Volunteer.findOne({ userId: user._id });
 
     const tokens = await generateTokens(user);
     return res.status(200).send({
@@ -37,7 +49,8 @@ const logInGoogle = async (req: Request, res: Response) => {
         _id: user._id,
         role: user.role,
         username: user.username,
-        email: user.email
+        email: user.email,
+        volunteer
       }
     });
   } catch (err) {
@@ -108,6 +121,9 @@ const login = async (req: Request, res: Response) => {
 
     const tokens = await generateTokens(user);
 
+    const volunteer = await Volunteer.findOne({ userId: user._id });
+    const organization = await Organization.findOne({ userId: user._id });
+
     return res.status(200).send({
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
@@ -115,7 +131,9 @@ const login = async (req: Request, res: Response) => {
         _id: user._id,
         role: user.role,
         username: user.username,
-        email: user.email
+        email: user.email,
+        volunteer,
+        organization
       }
     });
   } catch (err) {
