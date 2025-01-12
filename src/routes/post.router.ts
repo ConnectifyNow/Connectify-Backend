@@ -13,8 +13,8 @@ router.delete(
   postController.deleteById.bind(postController)
 );
 router.get("/user/:userId", authMiddleware, postController.getPostsByUserId);
-router.post("/comment/:postId", authMiddleware, postController.addComment);
-router.put("/like/:userId", authMiddleware, postController.likePost);
+router.post("/:postId/comment", authMiddleware, postController.addComment);
+router.put("/:postId/like", authMiddleware, postController.likePost);
 router.get("/likes/:postId", authMiddleware, postController.getLikesByPostId);
 router.get(
   "/comments/:postId",

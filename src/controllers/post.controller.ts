@@ -77,7 +77,7 @@ export class PostController extends BaseController<IPost> {
         return res.status(404).json({ message: "Post not found" });
       }
 
-      const userId = req.params.userId;
+      const userId = req.body.userId;
       if (!mongoose.Types.UUID.isValid(userId)) {
         return res.status(400).send({ error: "Invalid user id format" });
       }
