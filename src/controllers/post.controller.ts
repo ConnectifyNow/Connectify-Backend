@@ -10,28 +10,28 @@ export class PostController extends BaseController<IPost> {
   }
 
   getPostsOverview = async (req: Request, res: Response) => {
-    if (req.params.id) {
-      return postController.getById(req, res, [
-        "_id",
-        "title",
-        "content",
-        "userId",
-        "date",
-        "comments",
-        "requiredSkills",
-        "likes",
-      ]);
+    const page = parseInt(req.query.page as string) || 1; // Default to page 1
+    const limit = parseInt(req.query.limit as string) || 4; // Default to limit 4
+
+    const skip = (page - 1) * limit;
+
+    try {
+      // Fetch the posts with pagination
+      const posts = await PostModel.find().skip(skip).limit(limit);
+      const totalPosts = await PostModel.countDocuments();
+
+      return res.json({
+        data: posts,
+        meta: {
+          total: totalPosts,
+          page,
+          limit,
+          totalPages: Math.ceil(totalPosts / limit),
+        },
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
     }
-    return postController.getAll(req, res, [
-      "_id",
-      "title",
-      "content",
-      "userId",
-      "date",
-      "comments",
-      "requiredSkills",
-      "likes",
-    ]);
   };
 
   getPostsByUserId = async (req: Request, res: Response) => {
@@ -67,7 +67,11 @@ export class PostController extends BaseController<IPost> {
         return res.status(404).json({ message: "Post not found" });
       }
 
-      const comment = await CommentModel.create({...req.body, postId: postId, likes: []});
+      const comment = await CommentModel.create({
+        ...req.body,
+        postId: postId,
+        likes: [],
+      });
 
       post.comments.push(comment._id.toString());
       await post.save();
@@ -110,7 +114,7 @@ export class PostController extends BaseController<IPost> {
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  }
+  };
 
   getLikesByPostId = async (req: Request, res: Response) => {
     try {
@@ -130,7 +134,7 @@ export class PostController extends BaseController<IPost> {
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  }
+  };
 }
 
 const postController = new PostController(PostModel);
