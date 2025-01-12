@@ -1,12 +1,54 @@
-import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/user";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
+import { Role } from "../types";
 
-const signup = async (req: Request, res: Response) => {
-  const { name, email, password, type, bio } = req.body;
+const client = new OAuth2Client();
 
-  if (!name || !email || !password || !type || !bio)
+const logInGoogle = async (req: Request, res: Response) => {
+  const idToken = "Understand How To Get The Token";
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+    const payload = ticket.getPayload();
+
+    const { name, email } = payload;
+
+    let user = await User.findOne({ email: email });
+
+    if (!user) {
+      user = await User.create({
+        username: name,
+        email,
+        role: Role.Volunteer
+      });
+    }
+
+    const tokens = await generateTokens(user);
+    return res.status(200).send({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      user: {
+        _id: user._id,
+        role: user.role,
+        username: user.username,
+        email: user.email
+      }
+    });
+  } catch (err) {
+    return res.status(500).send("Invalid Google credential");
+  }
+};
+
+const register = async (req: Request, res: Response) => {
+  const { username, email, password, role } = req.body;
+
+  if (!username || !email || !password || role === undefined)
     return res.status(400).send("can't register the user - missing info");
 
   try {
@@ -16,34 +58,24 @@ const signup = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
 
-  generateTokens = async (user: IUser) => {
-    if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is not defined");
-    }
-    const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRATION,
+    const user = await User.create({
+      username,
+      email,
+      password: encryptedPassword,
+      role
     });
-    if (!process.env.JWT_REFRESH_SECRET) {
-      throw new Error("JWT_REFRESH_SECRET is not defined");
-    }
-    const refreshToken = jwt.sign(
-      { _id: user._id },
-      process.env.JWT_REFRESH_SECRET
-    );
 
-    if (user.refreshTokens == null) user.refreshTokens = [refreshToken];
-    else user.refreshTokens.push(refreshToken);
-
-    await user.save();
-    return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    };
-  };
+    const userObject = user.toObject();
+    delete userObject.password;
+    return res.status(201).send(userObject);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+};
 
 const generateTokens = async (user: IUser) => {
   const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRATION,
+    expiresIn: process.env.JWT_EXPIRATION
   });
   const refreshToken = jwt.sign(
     { _id: user._id },
@@ -56,22 +88,40 @@ const generateTokens = async (user: IUser) => {
   await user.save();
   return {
     accessToken: accessToken,
-    refreshToken: refreshToken,
+    refreshToken: refreshToken
   };
 };
 
-  logout = async (req: Request, res: Response) => {
-    const authHeader = req.headers.authorization;
-    const refreshToken = authHeader && authHeader.split(" ")[1]; // Bearer <token>
+const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
 
-    if (refreshToken == null) return res.sendStatus(401);
-    jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET as string,
-      async (err, user: { _id: string }) => {
-        if (err) {
-          return res.sendStatus(401);
-        }
+  if (!email || !password)
+    return res.status(400).send("missing email or password");
+
+  try {
+    const user = await User.findOne({ email: email });
+    if (user == null)
+      return res.status(401).send("email or password incorrect");
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).send("email or password incorrect");
+
+    const tokens = await generateTokens(user);
+
+    return res.status(200).send({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      user: {
+        _id: user._id,
+        role: user.role,
+        username: user.username,
+        email: user.email
+      }
+    });
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+};
 
 const logout = async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
@@ -97,10 +147,10 @@ const logout = async (req: Request, res: Response) => {
           return res.sendStatus(401);
         } else {
           userDb.refreshTokens = userDb.refreshTokens.filter(
-            (t: string) => t !== refreshToken
+            (token: string) => token !== refreshToken
           );
           await userDb.save();
-          return res.status(200).send("Logout successfully");
+          return res.status(200).send("Logout successful");
         }
       } catch (err) {
         return res.status(500).send(err.message);
@@ -157,7 +207,7 @@ const refresh = async (req: Request, res: Response) => {
 
         return res.status(200).send({
           accessToken: accessToken,
-          refreshToken: newRefreshToken,
+          refreshToken: newRefreshToken
         });
       } catch (err) {
         return res.status(500).send(err.message);
@@ -167,10 +217,9 @@ const refresh = async (req: Request, res: Response) => {
 };
 
 export default {
-  signin,
-  generateTokens,
-  signup,
+  logInGoogle,
+  register,
+  login,
   logout,
-  refresh,
-  
+  refresh
 };

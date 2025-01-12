@@ -9,7 +9,7 @@ export const verifyToken = (
   token: string,
   callback: (err: any, user: { _id: string }) => void
 ) => {
-  jwt.verify(token, JWT_SECRET);
+  jwt.verify(token, process.env.JWT_SECRET, callback);
 };
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -17,9 +17,10 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
 
   if (token == null) return res.sendStatus(401);
-  verifyToken(token, (err: any, user: { _id: string }) => {
-    if (err) return res.sendStatus(401);
-    (req as any).user = user as { _id: string };
+  verifyToken(token, (error: any, user: { _id: string }) => {
+    if (error) return res.sendStatus(401);
+
+    req.user = user;
     next();
   });
 };

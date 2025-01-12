@@ -4,14 +4,26 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", commentController.getCommentById);
+router.get("/:id?", authMiddleware, commentController.getCommentById);
 router.get(
   "/post/:postId",
-
+  authMiddleware,
   commentController.getCommentsByPostId
 );
-router.post("/", commentController.create.bind(commentController));
-router.put("/:id", commentController.putById.bind(commentController));
-router.delete("/:id", commentController.deleteById.bind(commentController));
+router.post(
+  "/",
+  authMiddleware,
+  commentController.create.bind(commentController)
+);
+router.put(
+  "/:id",
+  authMiddleware,
+  commentController.putById.bind(commentController)
+);
+router.delete(
+  "/:id",
+  authMiddleware,
+  commentController.deleteById.bind(commentController)
+);
 
 export default router;

@@ -21,7 +21,7 @@ const VolunteerSchema: Schema = new Schema({
   skills: [{ type: Number, ref: "Skill", required: true }],
   imageUrl: { type: String },
   about: { type: String },
-  userId: { type: Schema.Types.UUID, ref: "User", required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }
 });
 
 export default mongoose.model<IVolunteer>("Volunteer", VolunteerSchema);
