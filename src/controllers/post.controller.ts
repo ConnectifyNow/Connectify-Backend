@@ -10,28 +10,10 @@ export class PostController extends BaseController<IPost> {
   }
 
   getPostsOverview = async (req: Request, res: Response) => {
-    if (req.params.id) {
-      return postController.getById(req, res, [
-        "_id",
-        "title",
-        "content",
-        "userId",
-        "date",
-        "comments",
-        "requiredSkills",
-        "likes",
-      ]);
+    if (req.params.postId) {
+      return postController.getPostWithComments(req, res);
     }
-    return postController.getAll(req, res, [
-      "_id",
-      "title",
-      "content",
-      "userId",
-      "date",
-      "comments",
-      "requiredSkills",
-      "likes",
-    ]);
+    return postController.getAllPopulated(req, res, ["comments"]);
   };
 
   getPostsByUserId = async (req: Request, res: Response) => {
@@ -138,7 +120,6 @@ export class PostController extends BaseController<IPost> {
   getPostWithComments = async (req: Request, res: Response) => {
     try {
       const postId = req.params.postId;
-
       const post = await PostModel.findById(postId).populate("comments").exec();
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
