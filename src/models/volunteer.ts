@@ -4,7 +4,7 @@ export interface IVolunteer extends Document {
   phone: string;
   firstName: string;
   lastName: string;
-  city: number;
+  city: string;
   age: number;
   userId: string;
   skills: number[];
@@ -16,7 +16,7 @@ const VolunteerSchema: Schema = new Schema({
   phone: { type: String },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  city: { type: Number, ref: "City" },
+  city: { type: String, ref: "City" },
   age: { type: Number },
   skills: [{ type: Number, ref: "Skill" }],
   imageUrl: { type: String },
