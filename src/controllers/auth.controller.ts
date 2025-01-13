@@ -59,9 +59,9 @@ const logInGoogle = async (req: Request, res: Response) => {
 };
 
 const register = async (req: Request, res: Response) => {
-  const { username, email, password, role } = req.body;
+  const { email, password, role, withCreation } = req.body;
 
-  if (!username || !email || !password || role === undefined)
+  if (!email || !password || role === undefined)
     return res.status(400).send("can't register the user - missing info");
 
   try {
@@ -71,16 +71,19 @@ const register = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({
-      username,
-      email,
-      password: encryptedPassword,
-      role
-    });
+    if (withCreation) {
+      const user = await User.create({
+        email,
+        password: encryptedPassword,
+        role
+      });
 
-    const userObject = user.toObject();
-    delete userObject.password;
-    return res.status(201).send(userObject);
+      const userObject = user.toObject();
+      delete userObject.password;
+      return res.status(201).send(userObject);
+    }
+
+    return res.status(201).send();
   } catch (err) {
     return res.status(500).send(err.message);
   }

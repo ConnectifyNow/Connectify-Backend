@@ -21,6 +21,24 @@ export class BaseController<ModelType> {
     }
   };
 
+  getAllPopulated = async (
+    req: Request,
+    res: Response,
+    populateFields: string[]
+  ) => {
+    try {
+      const model = await this.model.find().populate(populateFields);
+
+      if (model.length === 0) {
+        return res.status(404).json({ message: "Model not found" });
+      }
+
+      res.send(model);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
   getById = async (req: Request, res: Response, selectFields?: string[]) => {
     try {
       const id = req.params.id;
