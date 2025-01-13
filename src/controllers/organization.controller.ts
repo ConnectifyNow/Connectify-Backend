@@ -9,26 +9,34 @@ export class OrganizationController extends BaseController<IOrganization> {
   }
 
   getOrganizationOverview = async (req: Request, res: Response) => {
-    if (req.params.id) {
-      return organizationController.getById(req, res, [
-        "userId",
-        "city",
-        "name",
-        "description",
-        "imageUrl",
-        "focusAreas",
-        "websiteLink",
-      ]);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    try {
+      const organizations = await this.model
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .select([
+          "userId",
+          "city",
+          "name",
+          "description",
+          "imageUrl",
+          "focusAreas",
+          "websiteLink"
+        ]);
+
+      const total = await this.model.countDocuments();
+
+      res.status(200).json({
+        organizations,
+        pages: Math.ceil(total / limit)
+      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-    return organizationController.getAll(req, res, [
-      "userId",
-      "city",
-      "name",
-      "description",
-      "imageUrl",
-      "focusAreas",
-      "websiteLink",
-    ]);
   };
 
   getOrganizationsByUserId = async (req: Request, res: Response) => {
