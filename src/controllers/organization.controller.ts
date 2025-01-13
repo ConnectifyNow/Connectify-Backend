@@ -17,7 +17,7 @@ export class OrganizationController extends BaseController<IOrganization> {
         "description",
         "imageUrl",
         "focusAreas",
-        "websiteLink"
+        "websiteLink",
       ]);
     }
     return organizationController.getAll(req, res, [
@@ -27,8 +27,27 @@ export class OrganizationController extends BaseController<IOrganization> {
       "description",
       "imageUrl",
       "focusAreas",
-      "websiteLink"
+      "websiteLink",
     ]);
+  };
+
+  getOrganizationsByUserId = async (req: Request, res: Response) => {
+    try {
+      const userId = req.params.userId;
+
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).send({ error: "userId isn't valid" });
+      }
+      const organizations = await OrganizationModel.find({ userId });
+      if (organizations.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No organizations found for this user" });
+      }
+      return res.status(200).json(organizations);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
   };
 }
 

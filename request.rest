@@ -3,9 +3,9 @@ POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "New User",
-  "email": "newuser3@example.com",
-  "password": "password",
+  "username": "hillali3",
+  "email": "hillali3@gmail.com",
+  "password": "1234",
   "role": 0
 }
 
@@ -14,14 +14,18 @@ POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
-  "email": "newuser@example.com",
-  "password": "password"
+  "email":"hillali3@gmail.com",
+  "password": "1234"
 }
 
 ### Chat Routes
 
 ### Get all chat IDs
 GET http://localhost:3000/api/chats/6782eae383bc2bf38ce78a50
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+### Get all posts
+GET http://localhost:3000/api/post
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
 
 ### Get chats by user ID

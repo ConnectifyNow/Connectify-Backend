@@ -6,10 +6,10 @@ export interface IVolunteer extends Document {
   lastName: string;
   city: string;
   age: number;
+  userId: string;
   skills: number[];
   imageUrl?: string;
   about?: string;
-  userId: string;
 }
 
 const VolunteerSchema: Schema = new Schema({
