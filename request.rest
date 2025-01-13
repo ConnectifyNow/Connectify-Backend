@@ -63,3 +63,20 @@ Content-Type: application/json
 ### Delete a skill by ID
 DELETE http://localhost:3000/api/skills/6782e9e9a4039393f74f2489
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+### Create a new ord
+POST http://localhost:3000/api/organizations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+Content-Type: application/json
+
+{
+  "city": "83c4b530-e554-47a6-8cf3-94ea59c13703",
+  "description": "regregteg",
+  "email": "geva@gmail.com",
+  "focusAreas":[],
+  "imageUrl": "http://localhost:5173/signup/organization",
+  "name": "fvfgeg",
+  "password": "1234",
+  "userId": "6785720c572547af6659705a",
+  "websiteLink": "http://localhost:5173/signup/organization"
+}

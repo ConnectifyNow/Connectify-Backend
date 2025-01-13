@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IOrganization extends Document {
-  city: number;
+  city: string;
   name: string;
   userId: string;
   focusAreas: number[];
@@ -11,13 +11,13 @@ export interface IOrganization extends Document {
 }
 
 const OrganizationSchema: Schema = new Schema({
-  city: { type: Number, ref: "City", required: true },
+  city: { type: String, ref: "City", required: true },
   name: { type: String, required: true },
   description: { type: String },
   imageUrl: { type: String },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   focusAreas: [{ type: Number, ref: "FocusArea" }],
-  websiteLink: { type: String }
+  websiteLink: { type: String },
 });
 
 export default mongoose.model<IOrganization>(
