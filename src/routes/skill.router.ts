@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", authMiddleware, skillController.getSkillOverview);
+router.get("/:id?", skillController.getSkillOverview);
 router.post("/", authMiddleware, skillController.create.bind(skillController));
 router.put(
   "/:id",

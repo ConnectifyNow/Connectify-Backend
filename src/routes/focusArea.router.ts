@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", authMiddleware, focusAreaController.getFocusAreas);
+router.get("/:id?", focusAreaController.getFocusAreas);
 router.post(
   "/",
   authMiddleware,
