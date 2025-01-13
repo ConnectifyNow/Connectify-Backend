@@ -3,8 +3,8 @@ POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "hila",
-  "email": "hila.ohana@gmail.com",
+  "username": "hillali3",
+  "email": "hillali3@gmail.com",
   "password": "1234",
   "role": 0
 }
@@ -14,7 +14,7 @@ POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
-  "email":"hila.ohana@gmail.com",
+  "email":"hillali3@gmail.com",
   "password": "1234"
 }
 
@@ -67,3 +67,35 @@ Content-Type: application/json
 ### Delete a skill by ID
 DELETE http://localhost:3000/api/skills/6782e9e9a4039393f74f2489
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+
+### Get skill by ID
+GET http://localhost:3000/api/volunteers/user/6784162109ecc3c0bec051d1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+
+### Create a new skill
+POST http://localhost:3000/api/volunteers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+Content-Type: application/json
+
+{
+  "phone": "052552525",
+  "firstName": "string;",
+  "lastName": "string;",
+  "city": 1,
+  "age": 1,
+  "skills": [],
+  "imageUrl": "http://localhost:3000/api/volunteers",
+  "about": "blablablabal",
+  "userId": "6784142aebdc9bff26762ca6"
+}
+
+
+### Create a new city
+POST http://localhost:3000/api/cities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+Content-Type: application/json
+
+{
+  "name": "HILA"
+}
