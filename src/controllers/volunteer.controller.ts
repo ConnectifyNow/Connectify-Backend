@@ -12,27 +12,27 @@ export class VolunteerController extends BaseController<IVolunteer> {
   getVolunteerOverview = async (req: Request, res: Response) => {
     if (req.params.id) {
       return volunteerController.getById(req, res, [
-        "phone",
+        "userId",
         "firstName",
         "lastName",
+        "phone",
         "city",
         "age",
         "skills",
         "imageUrl",
-        "about",
-        "userId",
+        "about"
       ]);
     }
     return volunteerController.getAll(req, res, [
-      "phone",
+      "userId",
       "firstName",
       "lastName",
+      "phone",
       "city",
       "age",
       "skills",
       "imageUrl",
-      "about",
-      "userId",
+      "about"
     ]);
   };
 

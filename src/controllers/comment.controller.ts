@@ -10,9 +10,14 @@ export class CommentController extends BaseController<IComment> {
 
   getCommentById = async (req: Request, res: Response) => {
     if (req.params.id) {
-      return commentController.getById(req, res, ["_id", "name"]);
+      return commentController.getById(req, res, [
+        "_id",
+        "text",
+        "likes",
+        "date"
+      ]);
     }
-    return commentController.getAll(req, res, ["_id", "name"]);
+    return commentController.getAll(req, res, ["_id", "text", "likes", "date"]);
   };
 
   getCommentsByPostId = async (req: Request, res: Response) => {
@@ -24,7 +29,7 @@ export class CommentController extends BaseController<IComment> {
     try {
       const comments = await this.model
         .find({ postId })
-        .select("_id name content");
+        .select("_id text likes date");
       if (!comments.length) {
         return res
           .status(404)
