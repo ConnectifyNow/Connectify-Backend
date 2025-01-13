@@ -6,10 +6,10 @@ export interface IVolunteer extends Document {
   lastName: string;
   city: number;
   age: number;
+  userId: string;
   skills: number[];
   imageUrl?: string;
   about?: string;
-  userId: string;
 }
 
 const VolunteerSchema: Schema = new Schema({
@@ -21,7 +21,7 @@ const VolunteerSchema: Schema = new Schema({
   skills: [{ type: Number, ref: "Skill" }],
   imageUrl: { type: String },
   about: { type: String },
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 export default mongoose.model<IVolunteer>("Volunteer", VolunteerSchema);

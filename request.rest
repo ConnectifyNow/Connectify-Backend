@@ -87,7 +87,7 @@ Content-Type: application/json
   "skills": [],
   "imageUrl": "http://localhost:3000/api/volunteers",
   "about": "blablablabal",
-  "userId": "6784142aebdc9bff26762ca6"
+  "userId": "f5b59df5-d4a6-4ebd-b6c2-b06b9dde758e"
 }
 
 
