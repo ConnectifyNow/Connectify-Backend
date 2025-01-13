@@ -6,13 +6,15 @@ export interface IComment extends Document {
   postId: string;
   text: string;
   likes: string[];
+  date: Date;
 }
 
 const CommentSchema: Schema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   postId: { type: Schema.Types.ObjectId, ref: "Post", required: true },
   text: { type: String, required: true },
-  likes: [{ type: Schema.Types.ObjectId, ref: "User" }]
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  date: { type: Date, default: Date.now }
 });
 
 export default mongoose.model<IComment>("Comment", CommentSchema);

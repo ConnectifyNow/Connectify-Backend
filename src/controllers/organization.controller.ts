@@ -11,28 +11,25 @@ export class OrganizationController extends BaseController<IOrganization> {
   getOrganizationOverview = async (req: Request, res: Response) => {
     if (req.params.id) {
       return organizationController.getById(req, res, [
-        "_id",
+        "userId",
         "city",
         "name",
         "description",
         "imageUrl",
-        "userId",
         "focusAreas",
-        "websiteLink",
+        "websiteLink"
       ]);
     }
     return organizationController.getAll(req, res, [
-      "_id",
+      "userId",
       "city",
       "name",
       "description",
       "imageUrl",
-      "userId",
       "focusAreas",
-      "websiteLink",
+      "websiteLink"
     ]);
   };
-  
 }
 
 const organizationController = new OrganizationController(OrganizationModel);
