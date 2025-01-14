@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 const base =
   process.env.NODE_ENV === "production"
     ? "https://colman.ac.il/"
-    : "http://localhost:3002/";
+    : "http://localhost:3000/";
 
 const uploadImage = async (req: Request, res: Response) => {
   try {
