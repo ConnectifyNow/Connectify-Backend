@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import mongoose, { Model } from "mongoose";
 import { BaseController } from "./base.controller";
 import OrganizationModel, { IOrganization } from "../models/organization";
+import { randomAvatarUrl } from "../utils/functions";
 
 export class OrganizationController extends BaseController<IOrganization> {
   constructor(model: Model<IOrganization>) {
@@ -53,6 +54,22 @@ export class OrganizationController extends BaseController<IOrganization> {
           .json({ message: "No organizations found for this user" });
       }
       return res.status(200).json(organizations);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
+  create = async (req: Request, res: Response) => {
+    const { imageUrl } = req.body;
+
+    try {
+      const volunteer = new this.model({
+        ...req.body,
+        imageUrl: imageUrl || randomAvatarUrl()
+      });
+
+      await volunteer.save();
+      res.status(201).json(volunteer);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
