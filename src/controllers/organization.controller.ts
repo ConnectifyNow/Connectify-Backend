@@ -63,13 +63,13 @@ export class OrganizationController extends BaseController<IOrganization> {
     const { imageUrl } = req.body;
 
     try {
-      const volunteer = new this.model({
+      const organization = new this.model({
         ...req.body,
         imageUrl: imageUrl || randomAvatarUrl()
       });
 
-      await volunteer.save();
-      res.status(201).json(volunteer);
+      await organization.save();
+      res.status(201).json(organization);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
