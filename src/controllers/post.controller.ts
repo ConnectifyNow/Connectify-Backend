@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import mongoose, { Model } from "mongoose";
 import PostModel, { IPost } from "../models/post";
 import CommentModel, { IComment } from "../models/comment";
+import UserModel, { IUser } from "../models/user";
+import VolunteerModel from "../models/volunteer";
+import OrganizationModel from "../models/organization";
 import { BaseController } from "./base.controller";
 
 export class PostController extends BaseController<IPost> {
@@ -10,11 +13,93 @@ export class PostController extends BaseController<IPost> {
   }
 
   getPostsOverview = async (req: Request, res: Response) => {
-    if (req.params.postId) {
-      return postController.getPostWithComments(req, res);
+    try {
+      const posts = await this.model.find()
+        .populate({
+          path: 'comments',
+          populate: { path: 'user' }
+        })
+        .populate('user')
+        .exec();
+
+      const postsWithUserInfo = await Promise.all(posts.map(async (post) => {
+        const user = post.user;
+        let userImageUrl = "";
+
+        if (user.role === 0) {
+          const volunteer = await VolunteerModel.findOne({ userId: user._id });
+          userImageUrl = volunteer?.imageUrl || "";
+        } else if (user.role === 1) {
+          const organization = await OrganizationModel.findOne({ userId: user._id });
+          userImageUrl = organization?.imageUrl || "";
+        }
+
+        const commentsWithUserInfo = await Promise.all(post.comments.map(async (comment) => {
+          const commentUser = comment.user;
+          let commentUserImageUrl = "";
+
+          if (commentUser.role === 0) {
+            const volunteer = await VolunteerModel.findOne({ userId: commentUser._id });
+            commentUserImageUrl = volunteer?.imageUrl || "";
+          } else if (commentUser.role === 1) {
+            const organization = await OrganizationModel.findOne({ userId: commentUser._id });
+            commentUserImageUrl = organization?.imageUrl || "";
+          }
+
+          return {
+            ...comment.toObject(),
+            user: {
+              ...commentUser.toObject(),
+              imageUrl: commentUserImageUrl
+            }
+          };
+        }));
+
+        return {
+          ...post.toObject(),
+          user: {
+            ...user.toObject(),
+            imageUrl: userImageUrl
+          },
+          comments: commentsWithUserInfo
+        };
+      }));
+
+      return res.status(200).json(postsWithUserInfo);
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
     }
-    return postController.getAllPopulated(req, res, ["comments"]);
   };
+  // getCommentsByPostId = async (req: Request, res: Response) => {
+  //   try {
+  //     const comments = await this.model.find({ postId: req.params.postId }).populate("user").exec();
+
+  //     const commentsWithUserInfo = await Promise.all(comments.map(async (comment) => {
+  //       const user = comment.user;
+  //       let imageUrl = "";
+
+  //       if (user.role === 0) {
+  //         const volunteer = await VolunteerModel.findOne({ userId: user._id });
+  //         imageUrl = volunteer?.imageUrl || "";
+  //       } else if (user.role === 1) {
+  //         const organization = await OrganizationModel.findOne({ userId: user._id });
+  //         imageUrl = organization?.imageUrl || "";
+  //       }
+
+  //       return {
+  //         ...comment.toObject(),
+  //         user: {
+  //           ...user.toObject(),
+  //           imageUrl
+  //         }
+  //       };
+  //     }));
+
+  //     return res.status(200).json(commentsWithUserInfo);
+  //   } catch (err) {
+  //     return res.status(500).json({ message: err.message });
+  //   }
+  // };
 
   getPostsByUserId = async (req: Request, res: Response) => {
     try {
@@ -120,7 +205,10 @@ export class PostController extends BaseController<IPost> {
   getPostWithComments = async (req: Request, res: Response) => {
     try {
       const postId = req.params.postId;
-      const post = await PostModel.findById(postId).populate("comments").exec();
+      const post = await PostModel.findById(postId)
+        .populate("comments")
+        .populate("user")
+        .exec();
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
       }
