@@ -31,9 +31,8 @@ initApp().then((app) => {
   });
   let server = http.createServer(app);
 
-  /************************************************************************************
-   *                              Set socket io
-   ***********************************************************************************/
+  //Set up socket.io
+
   const io = new SocketServer({ cors: { origin: "*" } }).listen(server);
 
   async function addUserToSocketDataIfAuthenticated(
@@ -52,7 +51,7 @@ initApp().then((app) => {
   io.use(addUserToSocketDataIfAuthenticated);
 
   io.on("connection", async (socket) => {
-    console.log("[SOCKET LOG]: user connected to socket stream");
+    console.log("user connected to socket stream");
 
     socket.on("joinRoom", async (conversationId) => {
       const canJoinRoom = await isUserPartOfConversation(
@@ -61,20 +60,16 @@ initApp().then((app) => {
       );
 
       if (canJoinRoom) {
-        console.log(
-          `[SOCKET LOG]: user has connected to room ${conversationId}`
-        );
+        console.log(`user has connected to room ${conversationId}`);
         socket.join(conversationId);
       } else {
-        console.log(
-          `[SOCKET LOG ERROR]: user has no access to connect to room ${conversationId}`
-        );
+        console.log(`user cannot connect to room ${conversationId}`);
       }
     });
 
     socket.on("sendMessage", async (data) => {
       const { conversationId, content } = data;
-      console.log(`[SOCKET LOG]: user sent message to room ${conversationId}`);
+      console.log(`user sent message to room ${conversationId}`);
 
       try {
         const newMessage = await sendMessageToConversation(
@@ -90,15 +85,13 @@ initApp().then((app) => {
           senderId: socket.data.userId,
         });
       } catch (err) {
-        console.log(
-          `[SOCKET LOG ERROR]: failed to send message to room ${conversationId}`
-        );
+        console.log(`failed to send message to room ${conversationId}`);
         console.log(err);
       }
     });
 
     socket.on("disconnect", () => {
-      console.log("[SOCKET LOG]: user has disconnected");
+      console.log("user has disconnected");
     });
   });
 });
