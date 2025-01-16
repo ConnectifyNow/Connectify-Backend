@@ -39,7 +39,6 @@ export class PostController extends BaseController<IPost> {
           const comments = await CommentModel.find({ post: post._id })
             .populate("user")
             .exec();
-          console.log("comments", comments);
 
           const commentsWithUserInfo = await Promise.all(
             comments.map(async (comment) => {

@@ -47,7 +47,6 @@ export class CommentController extends BaseController<IComment> {
   addComment = async (req: Request, res: Response) => {
     const { postId } = req.params;
     const { userId, text } = req.body;
-
     if (
       !mongoose.isValidObjectId(postId) ||
       !mongoose.isValidObjectId(userId)
