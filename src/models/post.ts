@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IPost extends Document {
-  user: string;
+  user: Schema.Types.ObjectId;
   title: string;
   imageUrl?: string;
   content: string;

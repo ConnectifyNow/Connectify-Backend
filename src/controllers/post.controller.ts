@@ -6,6 +6,7 @@ import UserModel, { IUser } from "../models/user";
 import VolunteerModel from "../models/volunteer";
 import OrganizationModel from "../models/organization";
 import { BaseController } from "./base.controller";
+import { Role } from "../types";
 
 export class PostController extends BaseController<IPost> {
   constructor(model: Model<IPost>) {
@@ -14,92 +15,76 @@ export class PostController extends BaseController<IPost> {
 
   getPostsOverview = async (req: Request, res: Response) => {
     try {
-      const posts = await this.model.find()
-        .populate({
-          path: 'comments',
-          populate: { path: 'user' }
-        })
-        .populate('user')
-        .exec();
+      const query = req.params.id ? { user: req.params.id } : {};
+      const posts = await this.model.find(query).populate("user").exec();
 
-      const postsWithUserInfo = await Promise.all(posts.map(async (post) => {
-        const user = post.user;
-        let userImageUrl = "";
+      const postsWithUserInfo = await Promise.all(
+        posts.map(async (post) => {
+          const user = post.user as unknown as IUser;
+          let userAdditionalDetails = null;
+          let userKey = "";
 
-        if (user.role === 0) {
-          const volunteer = await VolunteerModel.findOne({ userId: user._id });
-          userImageUrl = volunteer?.imageUrl || "";
-        } else if (user.role === 1) {
-          const organization = await OrganizationModel.findOne({ userId: user._id });
-          userImageUrl = organization?.imageUrl || "";
-        }
-
-        const commentsWithUserInfo = await Promise.all(post.comments.map(async (comment) => {
-          const commentUser = comment.user;
-          let commentUserImageUrl = "";
-
-          if (commentUser.role === 0) {
-            const volunteer = await VolunteerModel.findOne({ userId: commentUser._id });
-            commentUserImageUrl = volunteer?.imageUrl || "";
-          } else if (commentUser.role === 1) {
-            const organization = await OrganizationModel.findOne({ userId: commentUser._id });
-            commentUserImageUrl = organization?.imageUrl || "";
+          if (user.role === Role.Volunteer) {
+            userAdditionalDetails = await VolunteerModel.findOne({
+              userId: user._id,
+            });
+            userKey = "volunteer";
+          } else if (user.role === Role.Organization) {
+            userAdditionalDetails = await OrganizationModel.findOne({
+              userId: user._id,
+            });
+            userKey = "organization";
           }
 
-          return {
-            ...comment.toObject(),
-            user: {
-              ...commentUser.toObject(),
-              imageUrl: commentUserImageUrl
-            }
-          };
-        }));
+          const comments = await CommentModel.find({ post: post._id })
+            .populate("user")
+            .exec();
+          console.log("comments", comments);
 
-        return {
-          ...post.toObject(),
-          user: {
-            ...user.toObject(),
-            imageUrl: userImageUrl
-          },
-          comments: commentsWithUserInfo
-        };
-      }));
+          const commentsWithUserInfo = await Promise.all(
+            comments.map(async (comment) => {
+              const commentUser = comment.user as unknown as IUser;
+              let commentUserAdditionalDetails = null;
+              let commentUserKey = "";
+
+              if (commentUser.role === Role.Volunteer) {
+                commentUserAdditionalDetails = await VolunteerModel.findOne({
+                  userId: commentUser._id,
+                });
+                commentUserKey = "volunteer";
+              } else if (commentUser.role === Role.Organization) {
+                commentUserAdditionalDetails = await OrganizationModel.findOne({
+                  userId: commentUser._id,
+                });
+                commentUserKey = "organization";
+              }
+
+              return {
+                ...comment.toObject(),
+                user: {
+                  ...commentUser.toObject(),
+                  [commentUserKey]: commentUserAdditionalDetails,
+                },
+              };
+            })
+          );
+
+          return {
+            ...post.toObject(),
+            user: {
+              ...user.toObject(),
+              [userKey]: userAdditionalDetails,
+            },
+            comments: commentsWithUserInfo,
+          };
+        })
+      );
 
       return res.status(200).json(postsWithUserInfo);
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
   };
-  // getCommentsByPostId = async (req: Request, res: Response) => {
-  //   try {
-  //     const comments = await this.model.find({ postId: req.params.postId }).populate("user").exec();
-
-  //     const commentsWithUserInfo = await Promise.all(comments.map(async (comment) => {
-  //       const user = comment.user;
-  //       let imageUrl = "";
-
-  //       if (user.role === 0) {
-  //         const volunteer = await VolunteerModel.findOne({ userId: user._id });
-  //         imageUrl = volunteer?.imageUrl || "";
-  //       } else if (user.role === 1) {
-  //         const organization = await OrganizationModel.findOne({ userId: user._id });
-  //         imageUrl = organization?.imageUrl || "";
-  //       }
-
-  //       return {
-  //         ...comment.toObject(),
-  //         user: {
-  //           ...user.toObject(),
-  //           imageUrl
-  //         }
-  //       };
-  //     }));
-
-  //     return res.status(200).json(commentsWithUserInfo);
-  //   } catch (err) {
-  //     return res.status(500).json({ message: err.message });
-  //   }
-  // };
 
   getPostsByUserId = async (req: Request, res: Response) => {
     try {
@@ -120,33 +105,33 @@ export class PostController extends BaseController<IPost> {
     }
   };
 
-  addComment = async (req: Request, res: Response) => {
-    try {
-      const postId = req.params.postId;
-      if (!mongoose.Types.ObjectId.isValid(postId)) {
-        return res.status(400).send({ error: "Invalid post id format" });
-      }
-      if (!postId) {
-        return res.status(400).send({ error: "Post id is required" });
-      }
-      const post = await PostModel.findById(postId);
-      if (!post) {
-        return res.status(404).json({ message: "Post not found" });
-      }
+  // addComment = async (req: Request, res: Response) => {
+  //   try {
+  //     const postId = req.params.postId;
+  //     if (!mongoose.Types.ObjectId.isValid(postId)) {
+  //       return res.status(400).send({ error: "Invalid post id format" });
+  //     }
+  //     if (!postId) {
+  //       return res.status(400).send({ error: "Post id is required" });
+  //     }
+  //     const post = await PostModel.findById(postId);
+  //     if (!post) {
+  //       return res.status(404).json({ message: "Post not found" });
+  //     }
 
-      const comment = await CommentModel.create({
-        ...req.body,
-        postId: postId,
-        likes: [],
-      });
-      post.comments.push(comment._id.toString());
-      await post.save();
+  //     const comment = await CommentModel.create({
+  //       ...req.body,
+  //       postId: postId,
+  //       likes: [],
+  //     });
+  //     post.comments.push(comment._id.toString());
+  //     await post.save();
 
-      return res.status(200).json(post);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-  };
+  //     return res.status(200).json(post);
+  //   } catch (err) {
+  //     res.status(500).json({ message: err.message });
+  //   }
+  // };
 
   likePost = async (req: Request, res: Response) => {
     try {
