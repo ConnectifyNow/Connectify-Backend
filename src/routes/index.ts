@@ -10,7 +10,7 @@ import skillRouter from "./skill.router";
 import userRouter from "./user.router";
 import volunteerRouter from "./volunteer.router";
 import aiRouter from "./ai.router";
-
+import fileRouter from "./fileUpload";
 // Export the base-router
 const baseRouter = Router();
 baseRouter.use("/auth", authRouter);
@@ -24,5 +24,6 @@ baseRouter.use("/skills", skillRouter);
 baseRouter.use("/users", userRouter);
 baseRouter.use("/volunteers", volunteerRouter);
 baseRouter.use("/ai", aiRouter);
+baseRouter.use("/file", fileRouter);
 
 export default baseRouter;

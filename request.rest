@@ -3,10 +3,10 @@ POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "New User",
-  "email": "newuser3@example.com",
-  "password": "password",
-  "role": 0
+  "email": "hillali3@gmail.com",
+  "password": "1234",
+  "role": 0,
+  "withCreation": true
 }
 
 ### Login a user
@@ -14,14 +14,18 @@ POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
-  "email": "newuser@example.com",
-  "password": "password"
+  "email":"hillali3@gmail.com",
+  "password": "1234"
 }
 
 ### Chat Routes
 
 ### Get all chat IDs
 GET http://localhost:3000/api/chats/6782eae383bc2bf38ce78a50
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+### Get all posts
+GET http://localhost:3000/api/post
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
 
 ### Get chats by user ID
@@ -63,3 +67,31 @@ Content-Type: application/json
 ### Delete a skill by ID
 DELETE http://localhost:3000/api/skills/6782e9e9a4039393f74f2489
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzAyMzQsImV4cCI6MTczNjYzMzgzNH0.jX98sOueS7j9GhkXo9J7BPaFEa3SBefGpxkxnjJ_rFw
+
+### Create a new org
+POST http://localhost:3000/api/organizations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Nzg2YjEwMjgwNjE0MWVhZmE3YjRjYTUiLCJpYXQiOjE3MzY4ODAzOTEsImV4cCI6MTczNjg4Mzk5MX0.x9HNnhllSOrjYctvGhZLONV8xTm7hX0zzGc3YAL8iIY
+Content-Type: application/json
+
+{
+  "city": "83c4b530-e554-47a6-8cf3-94ea59c13703",
+  "description": "regregteg",
+  "email": "geva@gmail1.com",
+  "focusAreas":[],
+  "name": "fvfgeg",
+  "password": "1234",
+  "userId": "6785720c572547af6659705a",
+  "websiteLink": "http://localhost:5173/signup/organization"
+}
+
+### Create a new volunteer
+POST http://localhost:3000/api/volunteers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Nzg2YjEwMjgwNjE0MWVhZmE3YjRjYTUiLCJpYXQiOjE3MzY4ODAzOTEsImV4cCI6MTczNjg4Mzk5MX0.x9HNnhllSOrjYctvGhZLONV8xTm7hX0zzGc3YAL8iIY
+Content-Type: application/json
+
+{
+  "userId": "6782def65a30b06310406d42",
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com"
+}
