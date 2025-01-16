@@ -65,13 +65,13 @@ export class VolunteerController extends BaseController<IVolunteer> {
     const { imageUrl } = req.body;
 
     try {
-      const organization = new this.model({
+      const volunteer = new this.model({
         ...req.body,
         imageUrl: imageUrl || randomAvatarUrl()
       });
 
-      await organization.save();
-      res.status(201).json(organization);
+      await volunteer.save();
+      res.status(201).json(volunteer);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }

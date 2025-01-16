@@ -1,6 +1,5 @@
 import multer from "multer";
 import { Request } from "express";
-
 const maxSize = 10 * 1024 * 1024; // 10MB
 
 const upload = multer({

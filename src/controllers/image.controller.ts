@@ -11,7 +11,7 @@ const uploadImage = async (req: Request, res: Response) => {
     }
 
     const originalName = req.file.originalname;
-    const serverFilename = base + req.file.path;
+    const serverFilename = base + req.file.path.replace(/\\/g, "/");
 
     res.status(200).send({ originalName, serverFilename });
   } catch (err) {
