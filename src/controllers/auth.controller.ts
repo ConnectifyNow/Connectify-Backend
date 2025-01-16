@@ -59,7 +59,7 @@ const logInGoogle = async (req: Request, res: Response) => {
 };
 
 const register = async (req: Request, res: Response) => {
-  const { username, password, role, withCreation } = req.body;
+  const { username, email, password, role, withCreation } = req.body;
 
   if (!username || !password || role === undefined)
     return res.status(400).send("can't register the user - missing info");
@@ -74,6 +74,7 @@ const register = async (req: Request, res: Response) => {
     if (withCreation) {
       const user = await User.create({
         username,
+        email,
         password: encryptedPassword,
         role
       });
