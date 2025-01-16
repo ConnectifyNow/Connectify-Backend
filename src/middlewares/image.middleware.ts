@@ -1,6 +1,5 @@
 import multer from "multer";
 import { Request } from "express";
-
 const maxSize = 10 * 1024 * 1024; // 10MB
 
 const upload = multer({
@@ -8,11 +7,6 @@ const upload = multer({
     destination: function (req: Request, file, cb) {
       cb(null, "public/");
     },
-    // destination: function (req, file, cb) {
-    //   const uploadPath = path.join("..", "..", "Connectify-Backend", "public");
-
-    //   cb(null, uploadPath); // Set the destination for file uploads
-    // },
     filename: function (req: Request, file, cb) {
       const ext = file.originalname
         .split(".")
