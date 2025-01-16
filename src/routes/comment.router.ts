@@ -25,5 +25,6 @@ router.delete(
   authMiddleware,
   commentController.deleteById.bind(commentController)
 );
+router.put("/:commentId/like", authMiddleware, commentController.likeComment);
 
 export default router;
