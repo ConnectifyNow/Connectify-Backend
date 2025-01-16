@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   email: {
     type: String,
-    unique: true,
     lowercase: true
   },
   password: {

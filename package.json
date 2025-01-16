@@ -7,7 +7,8 @@
     "test": "tsc && jest --coverage --detectOpenHandles --forceExit --runInBand",
     "start": "tsc && node ./dist/src/server.js",
     "dev": "nodemon -x ts-node src/server.ts",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "fill-db": "npx ts-node tools/fill-db.ts"
   },
   "keywords": [],
   "license": "ISC",

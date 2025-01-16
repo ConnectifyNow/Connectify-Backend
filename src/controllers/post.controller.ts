@@ -26,12 +26,12 @@ export class PostController extends BaseController<IPost> {
 
           if (user.role === Role.Volunteer) {
             userAdditionalDetails = await VolunteerModel.findOne({
-              userId: user._id,
+              userId: user._id
             });
             userKey = "volunteer";
           } else if (user.role === Role.Organization) {
             userAdditionalDetails = await OrganizationModel.findOne({
-              userId: user._id,
+              userId: user._id
             });
             userKey = "organization";
           }
@@ -48,12 +48,12 @@ export class PostController extends BaseController<IPost> {
 
               if (commentUser.role === Role.Volunteer) {
                 commentUserAdditionalDetails = await VolunteerModel.findOne({
-                  userId: commentUser._id,
+                  userId: commentUser._id
                 });
                 commentUserKey = "volunteer";
               } else if (commentUser.role === Role.Organization) {
                 commentUserAdditionalDetails = await OrganizationModel.findOne({
-                  userId: commentUser._id,
+                  userId: commentUser._id
                 });
                 commentUserKey = "organization";
               }
@@ -62,8 +62,8 @@ export class PostController extends BaseController<IPost> {
                 ...comment.toObject(),
                 user: {
                   ...commentUser.toObject(),
-                  [commentUserKey]: commentUserAdditionalDetails,
-                },
+                  [commentUserKey]: commentUserAdditionalDetails
+                }
               };
             })
           );
@@ -72,15 +72,16 @@ export class PostController extends BaseController<IPost> {
             ...post.toObject(),
             user: {
               ...user.toObject(),
-              [userKey]: userAdditionalDetails,
+              [userKey]: userAdditionalDetails
             },
-            comments: commentsWithUserInfo,
+            comments: commentsWithUserInfo
           };
         })
       );
 
       return res.status(200).json(postsWithUserInfo);
     } catch (err) {
+      console.log(err);
       return res.status(500).json({ message: err.message });
     }
   };
