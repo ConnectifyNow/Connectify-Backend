@@ -95,10 +95,10 @@ export class CommentController extends BaseController<IComment> {
       if (comment.likes.includes(userId)) {
         return res
           .status(400)
-          .send({ message: "User has already liked this comment" });
+          .json({ message: "User has already liked this comment" });
+      } else {
+        comment.likes.push(userId);
       }
-
-      comment.likes.push(userId);
       await comment.save();
 
       return res.status(200).json(comment);
