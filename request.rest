@@ -48,11 +48,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmN
 
 ### Create a new skill
 POST http://localhost:3000/api/skills
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzgyZGVmNjVhMzBiMDYzMTA0MDZkNDIiLCJpYXQiOjE3MzY2MzI3ODAsImV4cCI6MTczNjYzNjM4MH0.Pfb-djxbfnv83hbVRird7tf8SM3WPaGo4JMbyROs-9A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Nzg5MDU3ZGRkOWZmNTlmM2UyNTgyOTciLCJpYXQiOjE3MzcwMzMwOTAsImV4cCI6MTczNzAzNjY5MH0.FxlTN4w7wht-UvcKQh5WeVR2LHJELFKE6o2DXmZsvGg
 Content-Type: application/json
 
 {
-  "name": "Vue"
+  "name": "react"
 }
 
 ### Update a skill by ID
