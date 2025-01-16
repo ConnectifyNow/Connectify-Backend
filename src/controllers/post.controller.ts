@@ -105,34 +105,6 @@ export class PostController extends BaseController<IPost> {
     }
   };
 
-  // addComment = async (req: Request, res: Response) => {
-  //   try {
-  //     const postId = req.params.postId;
-  //     if (!mongoose.Types.ObjectId.isValid(postId)) {
-  //       return res.status(400).send({ error: "Invalid post id format" });
-  //     }
-  //     if (!postId) {
-  //       return res.status(400).send({ error: "Post id is required" });
-  //     }
-  //     const post = await PostModel.findById(postId);
-  //     if (!post) {
-  //       return res.status(404).json({ message: "Post not found" });
-  //     }
-
-  //     const comment = await CommentModel.create({
-  //       ...req.body,
-  //       postId: postId,
-  //       likes: [],
-  //     });
-  //     post.comments.push(comment._id.toString());
-  //     await post.save();
-
-  //     return res.status(200).json(post);
-  //   } catch (err) {
-  //     res.status(500).json({ message: err.message });
-  //   }
-  // };
-
   likePost = async (req: Request, res: Response) => {
     try {
       const postId = req.params.postId;
