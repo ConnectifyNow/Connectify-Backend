@@ -1,16 +1,23 @@
 import express from "express";
-import chatController from "../controllers/chat.controller";
 import authMiddleware from "../middlewares/auth.middleware";
-import messageController from "../controllers/message.controller";
+import chatController from "../controllers/chat.controller";
+import conversationGuardMiddleware from "../middlewares/conversation_guard.middleware";
 
 const router = express.Router();
 
-router.get("/:id?", authMiddleware, chatController.getChat);
-router.get("/user/:userId", authMiddleware, chatController.getChatsByUser);
+router.get("/conversation", authMiddleware, chatController.getConversations);
+
 router.get(
-  "/:chatId/messages",
+  "/conversation/with/:userId",
   authMiddleware,
-  messageController.getMessagesByChatId
+  chatController.getConversationWith
+);
+
+router.get(
+  "/conversation/:id/messages",
+  authMiddleware,
+  conversationGuardMiddleware,
+  chatController.getMessages
 );
 
 export default router;
