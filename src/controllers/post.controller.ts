@@ -88,13 +88,14 @@ export class PostController extends BaseController<IPost> {
   getPostsByUserId = async (req: Request, res: Response) => {
     try {
       const userId = req.params.userId;
-      if (!mongoose.Types.UUID.isValid(userId)) {
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).send({ error: "Invalid user id format" });
       }
       if (!userId) {
         return res.status(400).send({ error: "User id is required" });
       }
       const posts = await PostModel.find({ userId });
+
       if (!posts) {
         return res.status(404).json({ message: "Posts not found" });
       }
@@ -107,7 +108,7 @@ export class PostController extends BaseController<IPost> {
   likePost = async (req: Request, res: Response) => {
     try {
       const postId = req.params.postId;
-      if (!mongoose.Types.UUID.isValid(postId)) {
+      if (!mongoose.Types.ObjectId.isValid(postId)) {
         return res.status(400).send({ error: "Invalid post id format" });
       }
       if (!postId) {
@@ -119,14 +120,18 @@ export class PostController extends BaseController<IPost> {
       }
 
       const userId = req.body.userId;
-      if (!mongoose.Types.UUID.isValid(userId)) {
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).send({ error: "Invalid user id format" });
       }
       if (!userId) {
         return res.status(400).send({ error: "User id is required" });
       }
 
-      if (!post.likes.includes(userId)) {
+      if (post.likes.includes(userId)) {
+        return res
+          .status(400)
+          .json({ message: "User has already liked this post" });
+      } else {
         post.likes.push(userId);
       }
 
@@ -141,7 +146,7 @@ export class PostController extends BaseController<IPost> {
   getLikesByPostId = async (req: Request, res: Response) => {
     try {
       const postId = req.params.postId;
-      if (!mongoose.Types.UUID.isValid(postId)) {
+      if (!mongoose.Types.ObjectId.isValid(postId)) {
         return res.status(400).send({ error: "Invalid post id format" });
       }
       if (!postId) {
