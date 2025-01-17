@@ -41,7 +41,7 @@ describe("Post Endpoints", () => {
     const response = await request(app)
       .post("/api/posts")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send(postTestData.post1);
+      .send({ ...postTestData.post1, user: userId });
 
     expect(response.status).toBe(201);
     expect(response.body.title).toBe(postTestData.post1.title);
@@ -49,8 +49,8 @@ describe("Post Endpoints", () => {
   });
 
   it("should get all posts", async () => {
-    await Post.create(postTestData.post1);
-    await Post.create(postTestData.post2);
+    await Post.create({ ...postTestData.post1, user: userId });
+    await Post.create({ ...postTestData.post2, user: userId });
 
     const response = await request(app)
       .get("/api/posts")
@@ -63,7 +63,7 @@ describe("Post Endpoints", () => {
   });
 
   it("should get a post by ID", async () => {
-    const post = await Post.create(postTestData.post1);
+    const post = await Post.create({ ...postTestData.post1, user: userId });
 
     const response = await request(app)
       .get(`/api/posts/${post._id}`)
@@ -74,7 +74,7 @@ describe("Post Endpoints", () => {
   });
 
   it("should update a post by ID", async () => {
-    const post = await Post.create(postTestData.post1);
+    const post = await Post.create({ ...postTestData.post1, user: userId });
 
     const updatedPostData = {
       title: "Updated Post",
@@ -92,7 +92,7 @@ describe("Post Endpoints", () => {
   });
 
   it("should delete a post by ID", async () => {
-    const post = await Post.create(postTestData.post1);
+    const post = await Post.create({ ...postTestData.post1, user: userId });
 
     const response = await request(app)
       .delete(`/api/posts/${post._id}`)
@@ -125,7 +125,7 @@ describe("Post Endpoints", () => {
   });
 
   it("should get likes by post ID", async () => {
-    const post = await Post.create(postTestData.post1);
+    const post = await Post.create({ ...postTestData.post1, user: userId });
     post.likes.push(userId.toString());
     await post.save();
 
@@ -135,16 +135,5 @@ describe("Post Endpoints", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toContain(userId);
-  });
-
-  it("should get post with comments", async () => {
-    const post = await Post.create(postTestData.post1);
-
-    const response = await request(app)
-      .get(`/api/posts/comments/${post._id}`)
-      .set("Authorization", `Bearer ${accessToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.title).toBe(postTestData.post1.title);
   });
 });

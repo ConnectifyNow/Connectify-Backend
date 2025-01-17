@@ -163,23 +163,6 @@ export class PostController extends BaseController<IPost> {
       res.status(500).json({ message: err.message });
     }
   };
-
-  getPostWithComments = async (req: Request, res: Response) => {
-    try {
-      const postId = req.params.postId;
-      const post = await PostModel.findById(postId)
-        .populate("comments")
-        .populate("user")
-        .exec();
-      if (!post) {
-        return res.status(404).json({ message: "Post not found" });
-      }
-
-      return res.status(200).json(post);
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
-    }
-  };
 }
 
 const postController = new PostController(PostModel);
