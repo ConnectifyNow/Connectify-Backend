@@ -2,34 +2,17 @@ import { Express } from "express";
 import request from "supertest";
 import mongoose from "mongoose";
 import initApp from "../app";
-import User from "../models/user";
 import City from "../models/city";
-import city from "../models/city";
+import { userTest, cityTest, cityTest2 } from "./mockData";
 
 let app: Express;
 let accessToken: string;
-
-const userTest = {
-  username: "testuser",
-  email: "testuser@example.com",
-  password: "password",
-  role: 0,
-  withCreation: true,
-};
-
-const cityTest = {
-  name: "New York",
-};
-
-const cityTest2 = {
-  name: "Los Angeles",
-};
 
 beforeAll(async () => {
   app = await initApp();
 
   // Register a user and get the access token
-  await request(app).post("/auth/signup").send(userTest);
+  await request(app).post("/api/auth/signup").send(userTest);
 
   const loginResponse = await request(app).post("/auth/signin").send({
     username: userTest.username,
