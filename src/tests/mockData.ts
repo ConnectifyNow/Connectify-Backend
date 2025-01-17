@@ -59,3 +59,23 @@ export const organizationTestData = {
     websiteLink: "http://example.com",
   },
 };
+
+// volunteer tests data
+export const volunteerTestData = {
+  volunteer1: {
+    phone: "1234567890",
+    firstName: "John",
+    lastName: "Doe",
+    city: "New York",
+    skills: [],
+    about: "This is a test volunteer",
+  },
+  volunteer2: {
+    phone: "0987654321",
+    firstName: "Jane",
+    lastName: "Doe",
+    city: "Los Angeles",
+    skills: [],
+    about: "This is another test volunteer",
+  },
+};
