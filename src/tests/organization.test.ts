@@ -1,6 +1,7 @@
 import request from "supertest";
 import mongoose, { Types } from "mongoose";
-import initApp from "../initApp"; // Assuming you have an initApp function to initialize the app
+import initApp from "../app";
+import { Express } from "express";
 import User from "../models/user";
 import Organization from "../models/organization";
 import { userTest, organizationTestData } from "./mockData";
@@ -52,8 +53,14 @@ describe("Organization Endpoints", () => {
   });
 
   it("should get all organizations", async () => {
-    await Organization.create({ ...organizationTestData.organization1, userId });
-    await Organization.create({ ...organizationTestData.organization2, userId });
+    await Organization.create({
+      ...organizationTestData.organization1,
+      userId,
+    });
+    await Organization.create({
+      ...organizationTestData.organization2,
+      userId,
+    });
 
     const response = await request(app)
       .get("/api/organizations")
@@ -66,7 +73,10 @@ describe("Organization Endpoints", () => {
   });
 
   it("should get an organization by ID", async () => {
-    const organization = await Organization.create({ ...organizationTestData.organization1, userId });
+    const organization = await Organization.create({
+      ...organizationTestData.organization1,
+      userId,
+    });
 
     const response = await request(app)
       .get(`/api/organizations/${organization._id}`)
@@ -77,7 +87,10 @@ describe("Organization Endpoints", () => {
   });
 
   it("should update an organization by ID", async () => {
-    const organization = await Organization.create({ ...organizationTestData.organization1, userId });
+    const organization = await Organization.create({
+      ...organizationTestData.organization1,
+      userId,
+    });
 
     const updatedOrganizationData = {
       city: "Los Angeles",
@@ -100,7 +113,10 @@ describe("Organization Endpoints", () => {
   });
 
   it("should delete an organization by ID", async () => {
-    const organization = await Organization.create({ ...organizationTestData.organization1, userId });
+    const organization = await Organization.create({
+      ...organizationTestData.organization1,
+      userId,
+    });
 
     const response = await request(app)
       .delete(`/api/organizations/${organization._id}`)
@@ -121,8 +137,14 @@ describe("Organization Endpoints", () => {
   });
 
   it("should get organizations by user ID", async () => {
-    await Organization.create({ ...organizationTestData.organization1, userId });
-    await Organization.create({ ...organizationTestData.organization2, userId });
+    await Organization.create({
+      ...organizationTestData.organization1,
+      userId,
+    });
+    await Organization.create({
+      ...organizationTestData.organization2,
+      userId,
+    });
 
     const response = await request(app)
       .get(`/api/organizations/user/${userId}`)
