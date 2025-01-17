@@ -33,4 +33,11 @@ describe("Image Upload API", () => {
 
     expect(response.status).toBe(200);
   });
+
+  it("responds with 400 if no image is provided", async () => {
+    const response = await request(app).post("/api/file/image");
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe("No image file provided.");
+  });
 });
