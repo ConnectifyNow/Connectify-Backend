@@ -2,29 +2,21 @@ import { Express } from "express";
 import request from "supertest";
 import mongoose from "mongoose";
 import initApp from "../app";
-import User from "../models/user";
 import Skill from "../models/skill";
-import { skillTestData } from "./mockData";
+import { skillTestData, userTest } from "./mockData";
 
 let app: Express;
 let accessToken: string;
-
 
 beforeAll(async () => {
   app = await initApp();
 
   // Register a user and get the access token
-  await request(app).post("/auth/signup").send({
-    username: "testuser",
-    email: "testuser@example.com",
-    password: "password",
-    role: 0,
-    withCreation: true,
-  });
+  await request(app).post("/auth/signup").send(userTest);
 
   const loginResponse = await request(app).post("/auth/signin").send({
-    username: "testuser",
-    password: "password",
+    username: userTest.username,
+    password: userTest.password,
   });
 
   accessToken = loginResponse.body.accessToken;
@@ -38,7 +30,7 @@ beforeEach(async () => {
   await Skill.deleteMany({});
 });
 
-describe("Skill Endpoints", () => {
+describe("Skill Controller", () => {
   it("should create a new skill", async () => {
     const response = await request(app)
       .post("/skills")
