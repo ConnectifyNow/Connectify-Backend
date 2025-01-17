@@ -12,7 +12,7 @@ beforeAll(async () => {
   app = await initApp();
 
   // Register a user and get the access token
-  await request(app).post("/auth/signup").send(userTest);
+  await request(app).post("/api/auth/signup").send(userTest);
 
   const loginResponse = await request(app).post("/auth/signin").send({
     username: userTest.username,

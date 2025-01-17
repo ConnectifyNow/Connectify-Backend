@@ -12,9 +12,9 @@ beforeAll(async () => {
   app = await initApp();
 
   // Register a user and get the access token
-  await request(app).post("/auth/signup").send(userTest);
+  await request(app).post("/api/auth/signup").send(userTest);
 
-  const loginResponse = await request(app).post("/auth/signin").send({
+  const loginResponse = await request(app).post("/api/auth/signin").send({
     username: userTest.username,
     password: userTest.password,
   });
@@ -33,10 +33,9 @@ beforeEach(async () => {
 describe("Skill Controller", () => {
   it("should create a new skill", async () => {
     const response = await request(app)
-      .post("/skills")
+      .post("/api/skills")
       .set("Authorization", `Bearer ${accessToken}`)
       .send(skillTestData.skill1);
-
     expect(response.status).toBe(201);
     expect(response.body.name).toBe(skillTestData.skill1.name);
   });
@@ -46,7 +45,7 @@ describe("Skill Controller", () => {
     await Skill.create(skillTestData.skill2);
 
     const response = await request(app)
-      .get("/skills")
+      .get("/api/skills")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
@@ -59,7 +58,7 @@ describe("Skill Controller", () => {
     const skill = await Skill.create(skillTestData.skill1);
 
     const response = await request(app)
-      .get(`/skills/${skill._id}`)
+      .get(`/api/skills/${skill._id}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
@@ -72,7 +71,7 @@ describe("Skill Controller", () => {
     const updatedSkillData = { name: "TypeScript" };
 
     const response = await request(app)
-      .put(`/skills/${skill._id}`)
+      .put(`/api/skills/${skill._id}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .send(updatedSkillData);
 
@@ -84,7 +83,7 @@ describe("Skill Controller", () => {
     const skill = await Skill.create(skillTestData.skill1);
 
     const response = await request(app)
-      .delete(`/skills/${skill._id}`)
+      .delete(`/api/skills/${skill._id}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
@@ -95,7 +94,7 @@ describe("Skill Controller", () => {
 
   it("should return 404 if skill not found", async () => {
     const response = await request(app)
-      .get(`/skills/${new mongoose.Types.ObjectId()}`)
+      .get(`/api/skills/${new mongoose.Types.ObjectId()}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(404);
