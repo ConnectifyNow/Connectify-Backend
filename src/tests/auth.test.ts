@@ -121,4 +121,79 @@ describe("Authentication tests", () => {
       });
     });
   });
+
+  describe("Refresh Token API", () => {
+    it("should handle expired refresh token after timeout", async () => {
+      // Mocking expired refresh token
+      const expiredRefreshToken = jwt.sign({ _id: "userId" }, "expiredSecret", {
+        expiresIn: "-1s",
+      });
+
+      const response = await request(app)
+        .post("/api/auth/refresh")
+        .set("Authorization", `Bearer ${expiredRefreshToken}`)
+        .expect(401);
+
+      expect(response.text).toContain("Unauthorized");
+    });
+
+    it("should handle missing authorization token during token refresh", async () => {
+      const response = await request(app).post("/api/auth/refresh").expect(401);
+
+      expect(response.text).toContain("Unauthorized");
+    });
+
+    it("should handle invalid authorization token during token refresh", async () => {
+      const response = await request(app)
+        .post("/api/auth/refresh")
+        .set("Authorization", "Bearer InvalidToken")
+        .expect(401);
+
+      expect(response.text).toContain("Unauthorized");
+    });
+
+    it("should return 401 if user not found in the database", async () => {
+      // Mocking the User.findOne method to return null
+      jest.spyOn(User, "findOne").mockResolvedValueOnce(null);
+
+      const response = await request(app)
+        .post("/api/auth/refresh")
+        .set("Authorization", `Bearer ${refreshToken}`)
+        .expect(401);
+
+      expect(response.text).toContain("User not found");
+    });
+
+    it("should return 500 if any error occurs during the process", async () => {
+      // Mocking the User.findOne method to throw an error
+      jest
+        .spyOn(User, "findOne")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      const response = await request(app)
+        .post("/api/auth/refresh")
+        .set("Authorization", `Bearer ${refreshToken}`)
+        .expect(500);
+
+      expect(response.text).toContain("Database error");
+    });
+
+    it("should refresh access token with valid refresh token", async () => {
+      const response = await request(app)
+        .post("/api/auth/refresh")
+        .set("Authorization", `Bearer ${refreshToken}`)
+        .expect(200);
+
+      expect(response.body.accessToken).toBeDefined();
+      expect(response.body.refreshToken).toBeDefined();
+
+      const newAccessToken = response.body.accessToken;
+      newRefreshToken = response.body.refreshToken;
+
+      const response2 = await request(app)
+        .get("/api/posts")
+        .set("Authorization", `Bearer ${newAccessToken}`);
+      expect(response2.statusCode).toBe(200);
+    });
+  });
 });
