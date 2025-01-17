@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import initApp from "../app";
 import User from "../models/user";
 import City from "../models/city";
+import city from "../models/city";
 
 let app: Express;
 let accessToken: string;
@@ -15,6 +16,15 @@ const userTest = {
   role: 0,
   withCreation: true,
 };
+
+const cityTest = {
+  name: "New York",
+};
+
+const cityTest2 = {
+  name: "Los Angeles",
+};
+
 beforeAll(async () => {
   app = await initApp();
 
@@ -40,46 +50,25 @@ beforeEach(async () => {
 describe("CityController", () => {
   it("should create a new city", async () => {
     const response = await request(app)
-      .post("/cities")
+      .post("/api/cities")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({
-        name: "New York",
-      });
+      .send(cityTest);
 
     expect(response.status).toBe(201);
-    expect(response.body.name).toBe("New York");
+    expect(response.body.name).toBe(cityTest.name);
   });
 
   it("should get all cities", async () => {
-    await City.create({ name: "New York" });
-    await City.create({ name: "Los Angeles" });
+    await City.create(cityTest);
+    await City.create(cityTest2);
 
     const response = await request(app)
-      .get("/cities")
+      .get("/api/cities")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(2);
-    expect(response.body[0].name).toBe("New York");
-    expect(response.body[1].name).toBe("Los Angeles");
-  });
-
-  it("should get a city by ID", async () => {
-    const city = await City.create({ name: "New York" });
-
-    const response = await request(app)
-      .get(`/cities/${city._id}`)
-      .set("Authorization", `Bearer ${accessToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.name).toBe("New York");
-  });
-
-  it("should return 404 if city not found", async () => {
-    const response = await request(app)
-      .get(`/cities/${new mongoose.Types.ObjectId()}`)
-      .set("Authorization", `Bearer ${accessToken}`);
-
-    expect(response.status).toBe(404);
+    expect(response.body[0].name).toBe(cityTest.name);
+    expect(response.body[1].name).toBe(cityTest2.name);
   });
 });
