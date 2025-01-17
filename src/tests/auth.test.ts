@@ -222,4 +222,61 @@ describe("Authentication tests", () => {
       expect(response.text).toContain("Logout successful");
     });
   });
+
+  describe("Google Login API", () => {
+    it("should return 200 with access and refresh tokens for Google login", async () => {
+      const mockRes = {
+        status: jest.fn(() => mockRes),
+        send: jest.fn(),
+      };
+
+      const mockGoogleUser = {
+        name: "Hila Ohana",
+        email: "hila.ohana1910@gmail.com",
+        picture: "http://hadargoogle.png",
+      };
+
+      // Mock verifyIdToken function of OAuth2Client
+      (OAuth2Client.prototype.verifyIdToken as any).mockResolvedValue({
+        getPayload: () => mockGoogleUser,
+      });
+
+      // Send a request to the Google login endpoint
+      const response = await request(app)
+        .post("/api/auth/google")
+        .send({ credentialResponse: { credential: "mockedGoogleCredential" } });
+
+      console.log({ response: response.body });
+
+      expect(response.status).toBe(200);
+      expect(response.body.user.username).toBe(mockGoogleUser.name);
+      expect(response.body.user.email).toBe(mockGoogleUser.email);
+
+      (OAuth2Client.prototype.verifyIdToken as any).mockRestore();
+
+      // delete user
+      await User.deleteMany({ email: mockGoogleUser.email });
+    });
+
+    it("should return 500 for invalid Google credential", async () => {
+      const mockRes = {
+        status: jest.fn(() => mockRes),
+        send: jest.fn(),
+      };
+
+      // Mock verifyIdToken function of OAuth2Client to throw an error
+      (OAuth2Client.prototype.verifyIdToken as any).mockRejectedValue(
+        new Error("Invalid token")
+      );
+
+      // Send a request to the Google login endpoint
+      const response = await request(app)
+        .post("/api/auth/google")
+        .send({ credentialResponse: { credential: "mockedGoogleCredential" } });
+
+      // Assert response status code and error message
+      expect(response.status).toBe(500);
+      expect(response.text).toBe("Invalid Google credential");
+    });
+  });
 });
