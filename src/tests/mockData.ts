@@ -41,3 +41,21 @@ export const postTestData = {
     skills: ["Python"],
   },
 };
+
+// organization tests data
+export const organizationTestData = {
+  organization1: {
+    city: "New York",
+    name: "Test Organization 1",
+    description: "This is a test organization 1",
+    imageUrl: "http://example.com/image1.jpg",
+    websiteLink: "http://example.com",
+  },
+  organization2: {
+    city: "Los Angeles",
+    name: "Test Organization 2",
+    description: "This is a test organization 2",
+    imageUrl: "http://example.com/image2.jpg",
+    websiteLink: "http://example.com",
+  },
+};
