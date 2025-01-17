@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-const base =
-  process.env.NODE_ENV === "production"
-    ? "https://colman.ac.il/"
-    : "http://localhost:3000/";
+import { BASE_URL } from "../utils/constants";
 
 const uploadImage = async (req: Request, res: Response) => {
   try {
@@ -11,7 +8,7 @@ const uploadImage = async (req: Request, res: Response) => {
     }
 
     const originalName = req.file.originalname;
-    const serverFilename = base + req.file.path.replace(/\\/g, "/");
+    const serverFilename = BASE_URL + req.file.path.replace(/\\/g, "/");
 
     res.status(200).send({ originalName, serverFilename });
   } catch (err) {
@@ -20,5 +17,5 @@ const uploadImage = async (req: Request, res: Response) => {
 };
 
 export default {
-  uploadImage,
+  uploadImage
 };
