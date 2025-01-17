@@ -38,7 +38,6 @@ const getConversationWith = async (req: Request, res: Response) => {
 const getMessages = async (req: Request, res: Response) => {
   try {
     const { id: conversationId } = req.params;
-    console.log(conversationId);
     const conversation = await ChatModel.findById(conversationId, {
       openedAt: new Date(),
     }).populate({
@@ -51,17 +50,12 @@ const getMessages = async (req: Request, res: Response) => {
       },
     });
 
-    console.log(conversation);
-
     if (conversation) {
-      console.log(conversation.messages);
       res.status(200).json(conversation.messages);
     } else {
-      console.log("Conversation not found");
       res.status(404).json({ message: "Conversation not found" });
     }
   } catch (error) {
-    console.log("ERROR", error);
     res.status(500).json({ message: error.message });
   }
 };

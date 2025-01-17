@@ -37,7 +37,6 @@ describe("Focus Area Endpoints", () => {
       .post("/api/focus-areas")
       .set("Authorization", `Bearer ${accessToken}`)
       .send(focusAreaTestData.focusArea1);
-    console.log(response);
     expect(response.status).toBe(201);
     expect(response.body.name).toBe(focusAreaTestData.focusArea1.name);
   });
