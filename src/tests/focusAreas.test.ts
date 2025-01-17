@@ -24,7 +24,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
+  await mongoose.connection.close();
 });
 
 beforeEach(async () => {
@@ -34,10 +34,10 @@ beforeEach(async () => {
 describe("Focus Area Endpoints", () => {
   it("should create a new focus area", async () => {
     const response = await request(app)
-      .post("/api/focusAreas")
+      .post("/api/focus-areas")
       .set("Authorization", `Bearer ${accessToken}`)
       .send(focusAreaTestData.focusArea1);
-
+    console.log(response);
     expect(response.status).toBe(201);
     expect(response.body.name).toBe(focusAreaTestData.focusArea1.name);
   });
@@ -47,7 +47,7 @@ describe("Focus Area Endpoints", () => {
     await FocusArea.create(focusAreaTestData.focusArea2);
 
     const response = await request(app)
-      .get("/api/focusAreas")
+      .get("/api/focus-areas")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
@@ -60,7 +60,7 @@ describe("Focus Area Endpoints", () => {
     const focusArea = await FocusArea.create(focusAreaTestData.focusArea1);
 
     const response = await request(app)
-      .get(`/api/focusAreas/${focusArea._id}`)
+      .get(`/api/focus-areas/${focusArea._id}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
@@ -73,7 +73,7 @@ describe("Focus Area Endpoints", () => {
     const updatedFocusAreaData = { name: "Environment" };
 
     const response = await request(app)
-      .put(`/api/focusAreas/${focusArea._id}`)
+      .put(`/api/focus-areas/${focusArea._id}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .send(updatedFocusAreaData);
 
@@ -85,7 +85,7 @@ describe("Focus Area Endpoints", () => {
     const focusArea = await FocusArea.create(focusAreaTestData.focusArea1);
 
     const response = await request(app)
-      .delete(`/api/focusAreas/${focusArea._id}`)
+      .delete(`/api/focus-areas/${focusArea._id}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
@@ -96,7 +96,7 @@ describe("Focus Area Endpoints", () => {
 
   it("should return 404 if focus area not found", async () => {
     const response = await request(app)
-      .get(`/api/focusAreas/${new mongoose.Types.ObjectId()}`)
+      .get(`/api/focus-areas/${new mongoose.Types.ObjectId()}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(404);
