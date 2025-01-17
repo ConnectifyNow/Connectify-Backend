@@ -13,7 +13,31 @@ export class OrganizationController extends BaseController<IOrganization> {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
+    const { id } = req.params;
 
+    if (id) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send({ error: "Invalid organization ID" });
+      }
+
+      const organization = await this.model
+      .findById(id)
+      .select([
+        "userId",
+        "city",
+        "name",
+        "description",
+        "imageUrl",
+        "focusAreas",
+        "websiteLink"
+      ]);
+
+      if (!organization) {
+      return res.status(404).json({ message: "Organization not found" });
+      }
+
+      return res.status(200).json(organization);
+    }
     try {
       const organizations = await this.model
         .find()
