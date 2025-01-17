@@ -22,6 +22,12 @@ dist
 .env.test.local
 .env.production.local
 .env.local
+.envprod
 
 *.vscode
+
+# ssl
+client-cert.pem
+client-key.pem
+client.csr
 

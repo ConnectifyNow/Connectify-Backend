@@ -1,11 +1,13 @@
 import initApp from "./app";
-import http from "http";
+import http, { Server } from "http";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import { Socket, Server as SocketServer } from "socket.io";
 import { verifyToken } from "./middlewares/auth.middleware";
 import { isUserPartOfConversation } from "./middlewares/conversation_guard.middleware";
 import { sendMessageToConversation } from "./services/chat.service";
+import https from "https";
+import fs from "fs";
 
 initApp().then((app) => {
   const options = {
@@ -17,7 +19,14 @@ initApp().then((app) => {
         description:
           "REST server including authentication using JWT and refresh token"
       },
-      servers: [{ url: "http://localhost:3000" }],
+      servers: [
+        {
+          url:
+            process.env.NODE_ENV === "production"
+              ? "https://node95.cs.colman.ac.il"
+              : "http://localhost:" + process.env.PORT
+        }
+      ],
       components: {
         securitySchemes: {
           bearerAuth: {
@@ -33,13 +42,32 @@ initApp().then((app) => {
   };
   const specs = swaggerJsDoc(options);
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
-  const port = process.env.PORT || 3000;
 
-  let server = http.createServer(app);
+  let server: Server;
+  let port: string;
+  if (process.env.NODE_ENV !== "production") {
+    console.log("development");
+    port = process.env.PORT;
+    server = http.createServer(app);
+  } else {
+    console.log("production");
+    port = process.env.HTTPS_PORT;
+    const options = {
+      key: fs.readFileSync("./client-key.pem"),
+      cert: fs.readFileSync("./client-cert.pem")
+    };
+    server = https.createServer(options, app);
+  }
 
-  server.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-  });
+  server = server
+    .listen(port, () => {
+      if (process.env.NODE_ENV !== "production")
+        console.log(`Server running on http://localhost:${port}`);
+      else console.log(`Server running on https://localhost:${port}`);
+    })
+    .on("error", (err) => {
+      console.error("Error creating server:", err.message);
+    });
 
   const io = new SocketServer({ cors: { origin: "*" } }).listen(server);
 
