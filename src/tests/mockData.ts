@@ -21,3 +21,9 @@ export const cityTest = {
 export const cityTest2 = {
   name: "Los Angeles",
 };
+
+// focus area tests data
+export const focusAreaTestData = {
+  focusArea1: { name: "Education" },
+  focusArea2: { name: "Healthcare" },
+};
