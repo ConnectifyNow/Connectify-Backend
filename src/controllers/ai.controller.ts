@@ -25,7 +25,7 @@ export class AiController {
           },
         ],
       });
-      let description = "";
+
       completion.then((result) => {
         if (result.choices[0].message.content !== null) {
           res
