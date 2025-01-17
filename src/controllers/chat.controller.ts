@@ -17,12 +17,12 @@ const getConversations = async (req: Request, res: Response) => {
       users: { $in: [userId] },
       $or: [
         {
-          messages: { $not: { $size: 0 } },
+          messages: { $not: { $size: 0 } }
         },
         {
-          openedAt: { $gte: oldLimit },
-        },
-      ],
+          openedAt: { $gte: oldLimit }
+        }
+      ]
     }).populate("users", ["name", "image"]);
 
     res.status(200).json(conversations);
@@ -38,7 +38,7 @@ const getConversationWith = async (req: Request, res: Response) => {
 
     const conversation = await ChatModel.findOneAndUpdate(
       {
-        users: { $all: [userId, anotherUserId] },
+        users: { $all: [userId, anotherUserId] }
       },
       { openedAt: new Date() }
     );
@@ -54,15 +54,15 @@ const getMessages = async (req: Request, res: Response) => {
     const { id: conversationId } = req.params;
 
     const conversation = await ChatModel.findByIdAndUpdate(conversationId, {
-      openedAt: new Date(),
+      openedAt: new Date()
     }).populate({
       path: "messages",
       model: MessageModel,
       populate: {
         path: "sender",
         model: UserModel,
-        select: ["name", "image", "_id"],
-      },
+        select: ["name", "image", "_id"]
+      }
     });
 
     if (conversation) {
@@ -81,7 +81,6 @@ const addConversation = async (req: Request, res: Response) => {
     const { userId: otherUserId } = req.params;
 
     const otherUser = await UserModel.findById(otherUserId).select("_id");
-
     if (!otherUser) {
       return res
         .status(404)
@@ -91,7 +90,7 @@ const addConversation = async (req: Request, res: Response) => {
     const users = [userId, otherUserId].sort();
 
     const existingConversation = await ChatModel.findOne({
-      users: { $all: users },
+      users: { $all: users }
     });
 
     if (existingConversation) {
@@ -100,7 +99,7 @@ const addConversation = async (req: Request, res: Response) => {
 
     const newConversation = await ChatModel.create({
       users: users,
-      messages: [],
+      messages: []
     });
 
     res.status(200).json(newConversation);
@@ -113,5 +112,5 @@ export default {
   getConversations,
   getConversationWith,
   getMessages,
-  addConversation,
+  addConversation
 };

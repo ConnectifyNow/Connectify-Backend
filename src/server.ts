@@ -1,7 +1,5 @@
 import initApp from "./app";
-import https from "https";
-import http, { Server } from "http";
-import fs from "fs";
+import http from "http";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import { Socket, Server as SocketServer } from "socket.io";
@@ -17,21 +15,21 @@ initApp().then((app) => {
         title: "Web Advanced Application development 2025 REST API",
         version: "1.0.1",
         description:
-          "REST server including authentication using JWT and refresh token",
+          "REST server including authentication using JWT and refresh token"
       },
-      servers: [{ url: "http://localhost:3000" }],
+      servers: [{ url: "http://localhost:3000" }]
     },
-    apis: ["./src/routes/*.ts"],
+    apis: ["./src/routes/*.ts"]
   };
   const specs = swaggerJsDoc(options);
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
   const port = process.env.PORT || 3000;
-  app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-  });
+
   let server = http.createServer(app);
 
-  //Set up socket.io
+  server.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+  });
 
   const io = new SocketServer({ cors: { origin: "*" } }).listen(server);
 
@@ -77,12 +75,12 @@ initApp().then((app) => {
           socket.data.userId,
           content
         );
-        io.to(conversationId).emit("recieveMessage", {
+        io.to(conversationId).emit("receiveMessage", {
           conversationId,
           id: newMessage.id,
           content: newMessage.content,
           createdAt: newMessage.createdAt,
-          senderId: socket.data.userId,
+          senderId: socket.data.userId
         });
       } catch (err) {
         console.log(`failed to send message to room ${conversationId}`);
