@@ -113,20 +113,20 @@ describe("Post Endpoints", () => {
   });
 
   it("should like a post", async () => {
-    const post = await Post.create(postTestData.post1, User: userId);
+    const post = await Post.create({ ...postTestData.post1, user: userId });
 
     const response = await request(app)
       .put(`/api/posts/${post._id}/like`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ userId: userTest._id });
+      .send({ userId: userId });
 
     expect(response.status).toBe(200);
-    expect(response.body.likes).toContain(userTest._id);
+    expect(response.body.likes).toContain(userId);
   });
 
   it("should get likes by post ID", async () => {
     const post = await Post.create(postTestData.post1);
-    post.likes.push(userTest._id);
+    post.likes.push(userId.toString());
     await post.save();
 
     const response = await request(app)
@@ -134,7 +134,7 @@ describe("Post Endpoints", () => {
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body).toContain(userTest._id);
+    expect(response.body).toContain(userId);
   });
 
   it("should get post with comments", async () => {
