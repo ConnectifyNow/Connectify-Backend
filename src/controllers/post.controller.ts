@@ -15,9 +15,17 @@ export class PostController extends BaseController<IPost> {
 
   getPostsOverview = async (req: Request, res: Response) => {
     try {
-      const query = req.params.id ? { user: req.params.id } : {};
+      let query = {};
+      if (req.params.postId) {
+        if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
+          return res.status(400).send({ error: "Invalid user id format" });
+        }
+        query = { _id: req.params.postId };
+      }
       const posts = await this.model.find(query).populate("user").exec();
-
+      if (posts.length === 0) {
+        return res.status(404).json({ message: "No posts found" });
+      }
       const postsWithUserInfo = await Promise.all(
         posts.map(async (post) => {
           const user = post.user as unknown as IUser;
@@ -26,12 +34,12 @@ export class PostController extends BaseController<IPost> {
 
           if (user.role === Role.Volunteer) {
             userAdditionalDetails = await VolunteerModel.findOne({
-              userId: user._id
+              userId: user._id,
             });
             userKey = "volunteer";
           } else if (user.role === Role.Organization) {
             userAdditionalDetails = await OrganizationModel.findOne({
-              userId: user._id
+              userId: user._id,
             });
             userKey = "organization";
           }
@@ -48,12 +56,12 @@ export class PostController extends BaseController<IPost> {
 
               if (commentUser.role === Role.Volunteer) {
                 commentUserAdditionalDetails = await VolunteerModel.findOne({
-                  userId: commentUser._id
+                  userId: commentUser._id,
                 });
                 commentUserKey = "volunteer";
               } else if (commentUser.role === Role.Organization) {
                 commentUserAdditionalDetails = await OrganizationModel.findOne({
-                  userId: commentUser._id
+                  userId: commentUser._id,
                 });
                 commentUserKey = "organization";
               }
@@ -62,8 +70,8 @@ export class PostController extends BaseController<IPost> {
                 ...comment.toObject(),
                 user: {
                   ...commentUser.toObject(),
-                  [commentUserKey]: commentUserAdditionalDetails
-                }
+                  [commentUserKey]: commentUserAdditionalDetails,
+                },
               };
             })
           );
@@ -72,9 +80,9 @@ export class PostController extends BaseController<IPost> {
             ...post.toObject(),
             user: {
               ...user.toObject(),
-              [userKey]: userAdditionalDetails
+              [userKey]: userAdditionalDetails,
             },
-            comments: commentsWithUserInfo
+            comments: commentsWithUserInfo,
           };
         })
       );
@@ -161,23 +169,6 @@ export class PostController extends BaseController<IPost> {
       return res.status(200).json(post.likes);
     } catch (err) {
       res.status(500).json({ message: err.message });
-    }
-  };
-
-  getPostWithComments = async (req: Request, res: Response) => {
-    try {
-      const postId = req.params.postId;
-      const post = await PostModel.findById(postId)
-        .populate("comments")
-        .populate("user")
-        .exec();
-      if (!post) {
-        return res.status(404).json({ message: "Post not found" });
-      }
-
-      return res.status(200).json(post);
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
     }
   };
 }

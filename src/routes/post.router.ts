@@ -300,42 +300,4 @@ router.put("/:postId/like", authMiddleware, postController.likePost);
  *         description: Internal server error
  */
 router.get("/likes/:postId", authMiddleware, postController.getLikesByPostId);
-
-/**
- * @swagger
- * /api/posts/comments/{postId}:
- *   get:
- *     summary: Get comments by post ID
- *     tags: [Post]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: postId
- *         schema:
- *           type: string
- *         required: true
- *         description: The id of the post
- *     responses:
- *       200:
- *         description: List of comments for the post
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Comment'
- *       400:
- *         description: Invalid post ID
- *       404:
- *         description: No comments found for this post
- *       500:
- *         description: Internal server error
- */
-router.get(
-  "/comments/:postId",
-  authMiddleware,
-  postController.getPostWithComments
-);
-
 export default router;
