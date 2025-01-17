@@ -27,3 +27,17 @@ export const focusAreaTestData = {
   focusArea1: { name: "Education" },
   focusArea2: { name: "Healthcare" },
 };
+
+// post tests data
+export const postTestData = {
+  post1: {
+    title: "First Post",
+    content: "This is the content of the first post",
+    skills: ["JavaScript"],
+  },
+  post2: {
+    title: "Second Post",
+    content: "This is the content of the second post",
+    skills: ["Python"],
+  },
+};
