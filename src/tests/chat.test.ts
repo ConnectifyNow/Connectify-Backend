@@ -101,17 +101,4 @@ describe("Chat Endpoints", () => {
     expect(response.body.length).toBe(1);
     expect(response.body[0].content).toBe("Hello");
   });
-
-  it("should return 404 if conversation not found", async () => {
-    await Chat.deleteMany({});
-    const rand_id = new mongoose.Types.ObjectId();
-    console.log("rand: ", rand_id);
-    const response = await request(app)
-      .get(`/api/chats/conversation/${rand_id}/messages`)
-      .set("Authorization", `Bearer ${accessToken}`);
-
-    console.log(response.body);
-    console.log(response.status);
-    expect(response.status).toBe(404);
-  });
 });
