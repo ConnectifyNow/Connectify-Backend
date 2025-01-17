@@ -94,3 +94,18 @@ describe("GET /api/users/:id", () => {
     expect(response.body).toEqual("Internal Server Error");
   });
 });
+
+describe("GET /api/users", () => {
+  it("should get all user details", async () => {
+    const response = await request(app)
+      .get(`/api/users`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toBeInstanceOf(Array);
+
+    response.body.forEach((user) => {
+      expect(user).toHaveProperty("username");
+    });
+  });
+});
