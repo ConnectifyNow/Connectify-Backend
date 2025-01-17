@@ -65,14 +65,10 @@ describe("Post Endpoints", () => {
 
   it("should get a post by ID", async () => {
     const post = await Post.create({ ...postTestData.post1, user: userId });
-    console.log("post ", post);
-    console.log("post id ", post._id.toString());
     const response = await request(app)
       .get(`/api/posts/${post._id.toString()}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
-    console.log(response.body);
-    console.log(response.status)
     expect(response.status).toBe(200);
     expect(response.body[0].title).toBe(postTestData.post1.title);
   });
