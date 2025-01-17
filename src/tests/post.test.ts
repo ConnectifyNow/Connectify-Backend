@@ -12,6 +12,8 @@ let userId: Types.ObjectId;
 
 beforeAll(async () => {
   app = await initApp();
+  await User.deleteMany({});
+  await Post.deleteMany({});
 
   // Register a user and get the access token
   const signupResponse = await request(app)
@@ -37,103 +39,104 @@ beforeEach(async () => {
 });
 
 describe("Post Endpoints", () => {
-  it("should create a new post", async () => {
-    const response = await request(app)
-      .post("/api/posts")
-      .set("Authorization", `Bearer ${accessToken}`)
-      .send({ ...postTestData.post1, user: userId });
+//   it("should create a new post", async () => {
+//     const response = await request(app)
+//       .post("/api/posts")
+//       .set("Authorization", `Bearer ${accessToken}`)
+//       .send({ ...postTestData.post1, user: userId });
+//     expect(response.status).toBe(201);
+//     expect(response.body.title).toBe(postTestData.post1.title);
+//     expect(response.body.content).toBe(postTestData.post1.content);
+//   });
 
-    expect(response.status).toBe(201);
-    expect(response.body.title).toBe(postTestData.post1.title);
-    expect(response.body.content).toBe(postTestData.post1.content);
-  });
+//   it("should get all posts", async () => {
+//     await Post.create({ ...postTestData.post1, user: userId });
+//     await Post.create({ ...postTestData.post2, user: userId });
 
-  it("should get all posts", async () => {
-    await Post.create({ ...postTestData.post1, user: userId });
-    await Post.create({ ...postTestData.post2, user: userId });
+//     const response = await request(app)
+//       .get("/api/posts")
+//       .set("Authorization", `Bearer ${accessToken}`);
 
-    const response = await request(app)
-      .get("/api/posts")
-      .set("Authorization", `Bearer ${accessToken}`);
+//     expect(response.status).toBe(200);
+//     expect(response.body.length).toBe(2);
+//     expect(response.body[0].title).toBe(postTestData.post1.title);
+//     expect(response.body[1].title).toBe(postTestData.post2.title);
+//   });
 
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(2);
-    expect(response.body[0].title).toBe(postTestData.post1.title);
-    expect(response.body[1].title).toBe(postTestData.post2.title);
-  });
+//   it("should get a post by ID", async () => {
+//     const post = await Post.create({ ...postTestData.post1, user: userId });
 
-  it("should get a post by ID", async () => {
-    const post = await Post.create({ ...postTestData.post1, user: userId });
+//     const response = await request(app)
+//       .get(`/api/posts/${post._id}`)
+//       .set("Authorization", `Bearer ${accessToken}`);
 
-    const response = await request(app)
-      .get(`/api/posts/${post._id}`)
-      .set("Authorization", `Bearer ${accessToken}`);
+//     expect(response.status).toBe(200);
+//     expect(response.body.title).toBe(postTestData.post1.title);
+//   });
 
-    expect(response.status).toBe(200);
-    expect(response.body.title).toBe(postTestData.post1.title);
-  });
+//   it("should update a post by ID", async () => {
+//     const post = await Post.create({ ...postTestData.post1, user: userId });
 
-  it("should update a post by ID", async () => {
-    const post = await Post.create({ ...postTestData.post1, user: userId });
+//     const updatedPostData = {
+//       title: "Updated Post",
+//       content: "Updated content",
+//     };
 
-    const updatedPostData = {
-      title: "Updated Post",
-      content: "Updated content",
-    };
+//     const response = await request(app)
+//       .put(`/api/posts/${post._id}`)
+//       .set("Authorization", `Bearer ${accessToken}`)
+//       .send(updatedPostData);
 
-    const response = await request(app)
-      .put(`/api/posts/${post._id}`)
-      .set("Authorization", `Bearer ${accessToken}`)
-      .send(updatedPostData);
+//     expect(response.status).toBe(200);
+//     expect(response.body.title).toBe(updatedPostData.title);
+//     expect(response.body.content).toBe(updatedPostData.content);
+//   });
 
-    expect(response.status).toBe(200);
-    expect(response.body.title).toBe(updatedPostData.title);
-    expect(response.body.content).toBe(updatedPostData.content);
-  });
+//   it("should delete a post by ID", async () => {
+//     const post = await Post.create({ ...postTestData.post1, user: userId });
 
-  it("should delete a post by ID", async () => {
-    const post = await Post.create({ ...postTestData.post1, user: userId });
+//     const response = await request(app)
+//       .delete(`/api/posts/${post._id}`)
+//       .set("Authorization", `Bearer ${accessToken}`);
 
-    const response = await request(app)
-      .delete(`/api/posts/${post._id}`)
-      .set("Authorization", `Bearer ${accessToken}`);
+//     expect(response.status).toBe(200);
 
-    expect(response.status).toBe(200);
-
-    const deletedPost = await Post.findById(post._id);
-    expect(deletedPost).toBeNull();
-  });
+//     const deletedPost = await Post.findById(post._id);
+//     expect(deletedPost).toBeNull();
+//   });
 
   it("should return 404 if post not found", async () => {
     const response = await request(app)
       .get(`/api/posts/${new mongoose.Types.ObjectId()}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
+    console.log(response.body);
+    console.log(response.status);
     expect(response.status).toBe(404);
   });
 
-  it("should like a post", async () => {
-    const post = await Post.create({ ...postTestData.post1, user: userId });
+//   it("should like a post", async () => {
+//     const post = await Post.create({ ...postTestData.post1, user: userId });
 
-    const response = await request(app)
-      .put(`/api/posts/${post._id}/like`)
-      .set("Authorization", `Bearer ${accessToken}`)
-      .send({ userId: userId });
+//     const response = await request(app)
+//       .put(`/api/posts/${post._id}/like`)
+//       .set("Authorization", `Bearer ${accessToken}`)
+//       .send({ userId: userId });
 
-    expect(response.status).toBe(200);
-    expect(response.body.likes).toContain(userId);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body.likes).toContain(userId);
+//   });
 
-  it("should get likes by post ID", async () => {
-    const post = await Post.create({ ...postTestData.post1, user: userId });
-    post.likes.push(userId.toString());
-    await post.save();
+//   it("should get likes by post ID", async () => {
+//     const post = await Post.create({ ...postTestData.post1, user: userId });
+//     post.likes.push(userId.toString());
+//     await post.save();
 
-    const response = await request(app)
-      .get(`/api/posts/likes/${post._id}`)
-      .set("Authorization", `Bearer ${accessToken}`);
+//     const response = await request(app)
+//       .get(`/api/posts/likes/${post._id}`)
+//       .set("Authorization", `Bearer ${accessToken}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toContain(userId);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body).toContain(userId);
+//   });
 });

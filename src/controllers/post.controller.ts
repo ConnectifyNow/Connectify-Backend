@@ -15,9 +15,18 @@ export class PostController extends BaseController<IPost> {
 
   getPostsOverview = async (req: Request, res: Response) => {
     try {
-      const query = req.params.id ? { user: req.params.id } : {};
-      const posts = await this.model.find(query).populate("user").exec();
 
+      let query = {};
+      if (req.params.postId) {
+        if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
+          return res.status(400).send({ error: "Invalid user id format" });
+        }
+        query = { _id: req.params.postId };
+      }
+      const posts = await this.model.find(query).populate("user").exec();
+      if (posts.length === 0) {
+        return res.status(404).json({ message: "No posts found" });
+      }
       const postsWithUserInfo = await Promise.all(
         posts.map(async (post) => {
           const user = post.user as unknown as IUser;
