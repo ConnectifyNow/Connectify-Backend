@@ -25,8 +25,6 @@ const router = express.Router();
  *   get:
  *     summary: Get all skills
  *     tags: [Skill]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of all skills
@@ -39,7 +37,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/:id?", authMiddleware, skillController.getSkillOverview);
+router.get("/:id?", skillController.getSkillOverview);
 
 /**
  * @swagger
