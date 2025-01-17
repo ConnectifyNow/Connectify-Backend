@@ -3,8 +3,9 @@ POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 { 
-  "username": "hillali3",
+  "username": "hillali6",
   "password": "1234",
+  "email": "hila.mail2",
   "role": 0,
   "withCreation": true
 }
@@ -14,7 +15,7 @@ POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
-  "email":"hillali3@gmail.com",
+  "username":"hillali3",
   "password": "1234"
 }
 

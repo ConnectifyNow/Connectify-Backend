@@ -10,16 +10,17 @@ let userId: string;
 let app: Express;
 
 const userData = {
-  username: "Nico",
-  // email: "new.hila.ohana@example.com",
-  password: "password",
+  username: "new.hila.ohana",
+  email: "new.hila.ohana@example.com",
+  password: "password123",
   role: 0,
+  withCreation: true,
 };
 
 const userData2 = {
-  username: "Oakley",
-  // email: "idan.bartov@gmail.com",
-  password: "password",
+  username: "hillali6",
+  email: "hila.mail",
+  password: "1234",
   role: 0,
 };
 
@@ -40,14 +41,11 @@ beforeAll(async () => {
     .post("/api/auth/signin")
     .send({ username: userData.username, password: userData.password });
 
-  console.log({ 2: authResponse.status });
-
   await request(app)
     .post("/api/auth/signin")
     .send({ username: userData2.username, password: userData2.password });
 
   accessToken = authResponse.body.accessToken;
-  console.log({ body: authResponse.body });
   userId = authResponse.body.user._id;
 });
 
@@ -69,58 +67,30 @@ describe("GET /api/users/:id", () => {
     // expect(response.body).toHaveProperty("email", userData.email);
   });
 
-  // it("should handle internal server error (500)", async () => {
-  //   jest.spyOn(User, "find").mockImplementationOnce(() => {
-  //     throw new Error("Internal Server Error");
-  //   });
+  it("should handle internal server error (500)", async () => {
+    jest.spyOn(User, "find").mockImplementationOnce(() => {
+      throw new Error("Internal Server Error");
+    });
 
-  //   const response = await request(app)
-  //     .get(`/api/users/${userId}`)
-  //     .set("Authorization", `Bearer ${accessToken}`);
+    console.log({ userId });
+    const response = await request(app)
+      .get(`/api/users/${userId}`)
+      .set("Authorization", `Bearer ${accessToken}`);
 
-  //   expect(response.status).toBe(500);
-  //   expect(response.body).toEqual("Internal Server Error");
-  // });
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual("Internal Server Error");
+  });
 
-  // it("should handle internal server error (500)", async () => {
-  //   jest.spyOn(User, "find").mockImplementationOnce(() => {
-  //     throw new Error("Internal Server Error");
-  //   });
+  it("should handle internal server error (500)", async () => {
+    jest.spyOn(User, "find").mockImplementationOnce(() => {
+      throw new Error("Internal Server Error");
+    });
 
-  //   const response = await request(app)
-  //     .get(`/api/users/${userId}`)
-  //     .set("Authorization", `Bearer ${accessToken}`);
+    const response = await request(app)
+      .get(`/api/users/${userId}`)
+      .set("Authorization", `Bearer ${accessToken}`);
 
-  //   expect(response.status).toBe(500);
-  //   expect(response.body).toEqual("Internal Server Error");
-  // });
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual("Internal Server Error");
+  });
 });
-
-// describe("GET /api/users", () => {
-//   it("should get all user details", async () => {
-//     const response = await request(app)
-//       .get(`/api/users`)
-//       .set("Authorization", `Bearer ${accessToken}`);
-
-//     expect(response.status).toBe(200);
-//     expect(response.body).toBeInstanceOf(Array);
-
-//     response.body.forEach((user) => {
-//       expect(user).toHaveProperty("username");
-//       // expect(user).toHaveProperty("email");
-//     });
-//   });
-
-//   it("should handle internal server error (500)", async () => {
-//     jest.spyOn(User, "find").mockImplementationOnce(() => {
-//       throw new Error("Internal Server Error");
-//     });
-
-//     const response = await request(app)
-//       .get(`/api/users`)
-//       .set("Authorization", `Bearer ${accessToken}`);
-
-//     expect(response.status).toBe(500);
-//     expect(response.body).toEqual({ message: "Internal Server Error" });
-//   });
-// });
