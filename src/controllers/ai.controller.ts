@@ -25,7 +25,7 @@ export class AiController {
           },
         ],
       });
-      let description = "";
+
       completion.then((result) => {
         if (result.choices[0].message.content !== null) {
           res
@@ -34,7 +34,9 @@ export class AiController {
         }
       });
     } catch (error) {
-      res.status(500).json({ message: "Error processing AI request", error });
+      return res
+        .status(500)
+        .json({ message: "Error processing AI request", error });
     }
   };
 }

@@ -10,7 +10,6 @@ jest.mock("google-auth-library");
 let app: Express;
 
 const userData = {
-  // name: "new Hila ohana",
   username: "new.hila.ohana",
   email: "new.hila.ohana@example.com",
   password: "password123",
@@ -233,7 +232,7 @@ describe("Authentication tests", () => {
       const mockGoogleUser = {
         name: "Hila Ohana",
         email: "hila.ohana1910@gmail.com",
-        picture: "http://hadargoogle.png",
+        picture: "http://hilagoogle.png",
       };
 
       // Mock verifyIdToken function of OAuth2Client
