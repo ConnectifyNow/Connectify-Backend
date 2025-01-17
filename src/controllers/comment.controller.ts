@@ -29,7 +29,7 @@ export class CommentController extends BaseController<IComment> {
 
     try {
       const comments = await this.model
-        .find({ postId })
+        .find({ post: postId })
         .select("_id text likes date");
       if (!comments.length) {
         return res

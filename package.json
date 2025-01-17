@@ -9,6 +9,7 @@
     "test_s" : "tsc && jest ./src/tests/skill.test.ts --detectOpenHandles --forceExit --runInBand",
     "test_f" : "tsc && jest ./src/tests/focusAreas.test.ts --detectOpenHandles --forceExit --runInBand",
     "test_p" : "tsc && jest ./src/tests/post.test.ts --detectOpenHandles --forceExit --runInBand",
+    "test_com" : "tsc && jest ./src/tests/comment.test.ts --detectOpenHandles --forceExit --runInBand",
     "start": "tsc && node ./dist/src/server.js",
     "dev": "nodemon -x ts-node src/server.ts",
     "lint": "npx eslint .",
