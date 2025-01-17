@@ -80,7 +80,7 @@ initApp().then((app) => {
           id: newMessage.id,
           content: newMessage.content,
           createdAt: newMessage.createdAt,
-          senderId: socket.data.userId
+          sender: newMessage.sender
         });
       } catch (err) {
         console.log(`failed to send message to room ${conversationId}`);

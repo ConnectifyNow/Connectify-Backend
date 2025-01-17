@@ -7,17 +7,23 @@ const sendMessageToConversation = async (
   content: string
 ) => {
   try {
-    const conversation = await ChatModel.findById(conversationId);
+    const conversation = await ChatModel.findById(conversationId).populate(
+      "users",
+      ["_id", "username", "role"]
+    );
     if (!conversation) {
       throw new Error("Conversation not found");
     }
 
     const message: IMessage = new MessageModel({
       content,
-      sender: senderId,
+      sender: senderId
     });
+    console.log(message);
 
-    const savedMessage = await message.save();
+    const savedMessage = await (
+      await message.save()
+    ).populate("sender", ["_id", "username", "role"]);
 
     conversation.messages.push(savedMessage.id);
     await conversation.save();

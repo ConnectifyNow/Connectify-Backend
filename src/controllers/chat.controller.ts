@@ -47,7 +47,7 @@ const getMessages = async (req: Request, res: Response) => {
       populate: {
         path: "sender",
         model: UserModel,
-        select: ["name", "image", "_id"]
+        select: ["_id", "username", "role"]
       }
     });
 
@@ -66,7 +66,16 @@ const addConversation = async (req: Request, res: Response) => {
     const { _id: userId } = req.user;
     const { userId: otherUserId } = req.params;
 
-    const otherUser = await UserModel.findById(otherUserId).select("_id");
+    const currentUser = await UserModel.findById(userId).select([
+      "_id",
+      "username",
+      "role"
+    ]);
+    const otherUser = await UserModel.findById(otherUserId).select([
+      "_id",
+      "username",
+      "role"
+    ]);
     if (!otherUser) {
       return res
         .status(404)
@@ -88,7 +97,13 @@ const addConversation = async (req: Request, res: Response) => {
       messages: []
     });
 
-    res.status(200).json(newConversation);
+    const conversation = {
+      users: [currentUser, otherUser],
+      messages: [],
+      _id: newConversation._id
+    };
+
+    res.status(200).json(conversation);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
