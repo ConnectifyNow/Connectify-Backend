@@ -7,23 +7,9 @@ const getConversations = async (req: Request, res: Response) => {
   try {
     const { _id: userId } = req.user;
 
-    const emptyChatsDisplayMinutesThreshold = 5;
-    const oldLimit = new Date();
-    oldLimit.setMinutes(
-      oldLimit.getMinutes() - emptyChatsDisplayMinutesThreshold
-    );
-
     const conversations = await ChatModel.find({
-      users: { $in: [userId] },
-      $or: [
-        {
-          messages: { $not: { $size: 0 } },
-        },
-        {
-          openedAt: { $gte: oldLimit },
-        },
-      ],
-    }).populate("users", ["name", "image"]);
+      users: { $in: [userId] }
+    }).populate("users", ["_id", "username", "role"]);
 
     res.status(200).json(conversations);
   } catch (error) {
@@ -38,7 +24,7 @@ const getConversationWith = async (req: Request, res: Response) => {
 
     const conversation = await ChatModel.findOneAndUpdate(
       {
-        users: { $all: [userId, anotherUserId] },
+        users: { $all: [userId, anotherUserId] }
       },
       { openedAt: new Date() }
     );
@@ -54,15 +40,15 @@ const getMessages = async (req: Request, res: Response) => {
     const { id: conversationId } = req.params;
 
     const conversation = await ChatModel.findByIdAndUpdate(conversationId, {
-      openedAt: new Date(),
+      openedAt: new Date()
     }).populate({
       path: "messages",
       model: MessageModel,
       populate: {
         path: "sender",
         model: UserModel,
-        select: ["name", "image", "_id"],
-      },
+        select: ["_id", "username", "role"]
+      }
     });
 
     if (conversation) {
@@ -80,8 +66,16 @@ const addConversation = async (req: Request, res: Response) => {
     const { _id: userId } = req.user;
     const { userId: otherUserId } = req.params;
 
-    const otherUser = await UserModel.findById(otherUserId).select("_id");
-
+    const currentUser = await UserModel.findById(userId).select([
+      "_id",
+      "username",
+      "role"
+    ]);
+    const otherUser = await UserModel.findById(otherUserId).select([
+      "_id",
+      "username",
+      "role"
+    ]);
     if (!otherUser) {
       return res
         .status(404)
@@ -91,7 +85,7 @@ const addConversation = async (req: Request, res: Response) => {
     const users = [userId, otherUserId].sort();
 
     const existingConversation = await ChatModel.findOne({
-      users: { $all: users },
+      users: { $all: users }
     });
 
     if (existingConversation) {
@@ -100,10 +94,16 @@ const addConversation = async (req: Request, res: Response) => {
 
     const newConversation = await ChatModel.create({
       users: users,
-      messages: [],
+      messages: []
     });
 
-    res.status(200).json(newConversation);
+    const conversation = {
+      users: [currentUser, otherUser],
+      messages: [],
+      _id: newConversation._id
+    };
+
+    res.status(200).json(conversation);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -113,5 +113,5 @@ export default {
   getConversations,
   getConversationWith,
   getMessages,
-  addConversation,
+  addConversation
 };
