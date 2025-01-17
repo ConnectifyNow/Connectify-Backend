@@ -80,4 +80,45 @@ describe("Authentication tests", () => {
       expect(duplicateResponse.text).toBe("User already exists");
     });
   });
+
+  describe("Signin API", () => {
+    it("should return 400 if username or password is missing", async () => {
+      const response = await request(app).post("/api/auth/signin").send({});
+
+      expect(response.status).toBe(400);
+      expect(response.text).toContain("missing username or password");
+    });
+
+    it("should return 401 if username or password is incorrect", async () => {
+      const response = await request(app).post("/api/auth/signin").send({
+        username: "nonexistent@example.com",
+        password: "wrongpassword",
+      });
+
+      expect(response.status).toBe(401);
+      expect(response.text).toContain("username or password incorrect");
+    });
+
+    // Test for successful signin
+    it("should return 200 with access and refresh tokens if credentials are correct", async () => {
+      const response = await request(app)
+        .post("/api/auth/signin")
+        .send({ username: "new.hila.ohana", password: "password123" });
+
+      expect(response.status).toBe(200);
+      expect(response.body.accessToken).toBeDefined();
+      expect(response.body.refreshToken).toBeDefined();
+      accessToken = response.body.accessToken;
+      refreshToken = response.body.refreshToken;
+
+      expect(response.body.user).toEqual({
+        _id: expect.any(String),
+        role: 0,
+        username: "new.hila.ohana",
+        email: "new.hila.ohana@example.com",
+        volunteer: null,
+        organization: null,
+      });
+    });
+  });
 });
