@@ -10,9 +10,9 @@ export class UserController extends BaseController<IUser> {
 
   getUserOverview = async (req: Request, res: Response) => {
     if (req.params.id) {
-      return userController.getById(req, res, ["_id", "email", "role"]);
+      return userController.getById(req, res, ["_id", "username", "role"]);
     }
-    return userController.getAll(req, res, ["_id", "email", "role"]);
+    return userController.getAll(req, res, ["_id", "username", "role"]);
   };
 }
 const userController = new UserController(UserModel);

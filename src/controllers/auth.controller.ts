@@ -16,7 +16,7 @@ const logInGoogle = async (req: Request, res: Response) => {
   try {
     const ticket = await client.verifyIdToken({
       idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: process.env.GOOGLE_CLIENT_ID
     });
     const payload = ticket.getPayload();
 
@@ -28,14 +28,14 @@ const logInGoogle = async (req: Request, res: Response) => {
       user = await User.create({
         username: name,
         email,
-        role: Role.Volunteer,
+        role: Role.Volunteer
       });
 
       await Volunteer.create({
         userId: user._id,
         firstName: given_name,
         lastName: family_name,
-        imageUrl: picture,
+        imageUrl: picture
       });
     }
 
@@ -50,8 +50,8 @@ const logInGoogle = async (req: Request, res: Response) => {
         role: user.role,
         username: user.username,
         email: user.email,
-        volunteer,
-      },
+        volunteer
+      }
     });
   } catch (err) {
     return res.status(500).send("Invalid Google credential");
@@ -59,13 +59,13 @@ const logInGoogle = async (req: Request, res: Response) => {
 };
 
 const register = async (req: Request, res: Response) => {
-  const { email, password, role, withCreation } = req.body;
+  const { username, email, password, role, withCreation } = req.body;
 
-  if (!email || !password || role === undefined)
+  if (!username || !password || role === undefined)
     return res.status(400).send("can't register the user - missing info");
 
   try {
-    const response = await User.findOne({ email: email });
+    const response = await User.findOne({ username });
     if (response != null) return res.status(406).send("User already exists");
 
     const salt = await bcrypt.genSalt(10);
@@ -73,9 +73,10 @@ const register = async (req: Request, res: Response) => {
 
     if (withCreation) {
       const user = await User.create({
+        username,
         email,
         password: encryptedPassword,
-        role,
+        role
       });
 
       const userObject = user.toObject();
@@ -91,7 +92,7 @@ const register = async (req: Request, res: Response) => {
 
 const generateTokens = async (user: IUser) => {
   const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRATION,
+    expiresIn: process.env.JWT_EXPIRATION
   });
   const refreshToken = jwt.sign(
     { _id: user._id },
@@ -104,23 +105,23 @@ const generateTokens = async (user: IUser) => {
   await user.save();
   return {
     accessToken: accessToken,
-    refreshToken: refreshToken,
+    refreshToken: refreshToken
   };
 };
 
 const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password)
-    return res.status(400).send("missing email or password");
+  if (!username || !password)
+    return res.status(400).send("missing username or password");
 
   try {
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ username });
     if (user == null)
-      return res.status(401).send("email or password incorrect");
+      return res.status(401).send("username or password incorrect");
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).send("email or password incorrect");
+    if (!match) return res.status(401).send("username or password incorrect");
 
     const tokens = await generateTokens(user);
 
@@ -136,8 +137,8 @@ const login = async (req: Request, res: Response) => {
         username: user.username,
         email: user.email,
         volunteer,
-        organization,
-      },
+        organization
+      }
     });
   } catch (err) {
     return res.status(500).send(err.message);
@@ -228,7 +229,7 @@ const refresh = async (req: Request, res: Response) => {
 
         return res.status(200).send({
           accessToken: accessToken,
-          refreshToken: newRefreshToken,
+          refreshToken: newRefreshToken
         });
       } catch (err) {
         return res.status(500).send(err.message);
@@ -242,5 +243,5 @@ export default {
   register,
   login,
   logout,
-  refresh,
+  refresh
 };

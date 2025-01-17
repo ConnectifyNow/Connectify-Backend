@@ -6,7 +6,7 @@ export interface IPost extends Document {
   imageUrl?: string;
   content: string;
   date: string;
-  requiredSkills: string[];
+  skills: string[];
   likes: string[];
 }
 
@@ -16,8 +16,8 @@ const PostSchema: Schema = new Schema({
   imageUrl: { type: String },
   content: { type: String, required: true },
   date: { type: String },
-  requiredSkills: [{ type: String, ref: "Skill", required: true }],
-  likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  skills: [{ type: String, ref: "Skill", required: true }],
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }]
 });
 
 export default mongoose.model<IPost>("Post", PostSchema);
