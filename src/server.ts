@@ -17,8 +17,18 @@ initApp().then((app) => {
         description:
           "REST server including authentication using JWT and refresh token"
       },
-      servers: [{ url: "http://localhost:3000" }]
+      servers: [{ url: "http://localhost:3000" }],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT"
+          }
+        }
+      }
     },
+
     apis: ["./src/routes/*.ts"]
   };
   const specs = swaggerJsDoc(options);

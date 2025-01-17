@@ -13,6 +13,11 @@ export const verifyToken = (
 };
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // Skip auth check for Swagger docs
+  if (req.path.startsWith("/api-docs")) {
+    return next();
+  }
+
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
 
