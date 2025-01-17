@@ -108,4 +108,17 @@ describe("GET /api/users", () => {
       expect(user).toHaveProperty("username");
     });
   });
+
+  it("should handle internal server error (500)", async () => {
+    jest.spyOn(User, "find").mockImplementationOnce(() => {
+      throw new Error("Internal Server Error");
+    });
+
+    const response = await request(app)
+      .get(`/api/users`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ message: "Internal Server Error" });
+  });
 });
