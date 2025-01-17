@@ -14,7 +14,35 @@ export class VolunteerController extends BaseController<IVolunteer> {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
+    const { id } = req.params;
 
+    if (id) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send({ error: "Invalid volunteer ID" });
+      }
+
+      try {
+      const volunteer = await VolunteerModel.findById(id).select([
+        "userId",
+        "firstName",
+        "lastName",
+        "phone",
+        "city",
+        "age",
+        "skills",
+        "imageUrl",
+        "about"
+      ]);
+
+      if (!volunteer) {
+        return res.status(404).json({ message: "Volunteer not found" });
+      }
+
+      return res.status(200).json(volunteer);
+      } catch (err) {
+      return res.status(500).json({ message: err.message });
+      }
+    }
     try {
       const volunteers = await VolunteerModel.find()
         .skip(skip)
