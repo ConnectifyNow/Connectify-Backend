@@ -40,6 +40,8 @@ const router = express.Router();
  *   get:
  *     summary: Get all comments
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of all comments
@@ -60,6 +62,8 @@ router.get("/:id?", authMiddleware, commentController.getCommentById);
  *   get:
  *     summary: Get comments by post ID
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: postId
@@ -95,6 +99,8 @@ router.get(
  *   post:
  *     summary: Create a new comment
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -123,6 +129,8 @@ router.post(
  *   put:
  *     summary: Update a comment by ID
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -162,6 +170,10 @@ router.put(
  *   delete:
  *     summary: Delete a comment by ID
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -191,6 +203,8 @@ router.delete(
  *   put:
  *     summary: Like a comment by ID
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: commentId

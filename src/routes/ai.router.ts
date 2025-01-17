@@ -22,6 +22,8 @@ const router = express.Router();
  *   get:
  *     summary: Get AI-generated description for an organization
  *     tags: [AI]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: orgName
