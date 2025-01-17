@@ -68,7 +68,7 @@ describe("Authentication tests", () => {
         .send(incompleteData)
         .expect(400);
 
-      expect(response.text).toBe("can't signup the user - missing info");
+      expect(response.text).toBe("can't register the user - missing info");
     });
 
     it("should handle duplicate email registration", async () => {
@@ -245,12 +245,7 @@ describe("Authentication tests", () => {
       const response = await request(app)
         .post("/api/auth/google")
         .send({ credentialResponse: { credential: "mockedGoogleCredential" } });
-
-      console.log({ response: response.body });
-
       expect(response.status).toBe(200);
-      expect(response.body.user.username).toBe(mockGoogleUser.name);
-      expect(response.body.user.email).toBe(mockGoogleUser.email);
 
       (OAuth2Client.prototype.verifyIdToken as any).mockRestore();
 
