@@ -72,7 +72,6 @@ describe("GET /api/users/:id", () => {
       throw new Error("Internal Server Error");
     });
 
-    console.log({ userId });
     const response = await request(app)
       .get(`/api/users/${userId}`)
       .set("Authorization", `Bearer ${accessToken}`);
