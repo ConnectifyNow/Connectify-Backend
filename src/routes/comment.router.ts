@@ -172,8 +172,6 @@ router.put(
  *     tags: [Comment]
  *     security:
  *       - bearerAuth: []
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
