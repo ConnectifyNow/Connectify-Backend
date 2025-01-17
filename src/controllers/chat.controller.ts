@@ -7,23 +7,9 @@ const getConversations = async (req: Request, res: Response) => {
   try {
     const { _id: userId } = req.user;
 
-    const emptyChatsDisplayMinutesThreshold = 5;
-    const oldLimit = new Date();
-    oldLimit.setMinutes(
-      oldLimit.getMinutes() - emptyChatsDisplayMinutesThreshold
-    );
-
     const conversations = await ChatModel.find({
-      users: { $in: [userId] },
-      $or: [
-        {
-          messages: { $not: { $size: 0 } }
-        },
-        {
-          openedAt: { $gte: oldLimit }
-        }
-      ]
-    }).populate("users", ["name", "image"]);
+      users: { $in: [userId] }
+    }).populate("users", ["_id", "username", "role"]);
 
     res.status(200).json(conversations);
   } catch (error) {
