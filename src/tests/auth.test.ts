@@ -196,4 +196,30 @@ describe("Authentication tests", () => {
       expect(response2.statusCode).toBe(200);
     });
   });
+
+  describe("Logout API", () => {
+    it("should handle missing authorization token during logout", async () => {
+      const response = await request(app).post("/api/auth/logout").expect(401);
+
+      expect(response.text).toContain("Unauthorized");
+    });
+
+    it("should handle invalid authorization token during logout", async () => {
+      const response = await request(app)
+        .post("/api/auth/logout")
+        .set("Authorization", "Bearer InvalidToken")
+        .expect(401);
+
+      expect(response.text).toContain("Unauthorized");
+    });
+
+    it("should handle successful logout", async () => {
+      const response = await request(app)
+        .post("/api/auth/logout")
+        .set("Authorization", `Bearer ${newRefreshToken}`)
+        .expect(200);
+
+      expect(response.text).toContain("Logout successful");
+    });
+  });
 });
