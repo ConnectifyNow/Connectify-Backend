@@ -41,6 +41,6 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/:orgName", authMiddleware, aiController.getAiDescription);
+router.get("/:orgName", aiController.getAiDescription);
 
 export default router;
