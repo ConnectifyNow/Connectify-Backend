@@ -6,6 +6,7 @@
   "scripts": {
     "test": "tsc && jest --coverage --detectOpenHandles --forceExit --runInBand",
     "test_c" : "tsc && jest ./src/tests/city.test.ts --detectOpenHandles --forceExit --runInBand",
+    "test_fu" : "tsc && jest ./src/tests/file.upload.test.ts --detectOpenHandles --forceExit --runInBand",
     "test_s" : "tsc && jest ./src/tests/skill.test.ts --detectOpenHandles --forceExit --runInBand",
     "test_a" : "tsc && jest ./src/tests/auth.test.ts --detectOpenHandles --forceExit --runInBand",
     "test_u" : "tsc && jest ./src/tests/user.test.ts --detectOpenHandles --forceExit --runInBand",
