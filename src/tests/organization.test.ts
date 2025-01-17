@@ -68,8 +68,8 @@ describe("Organization Endpoints", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.organizations.length).toBe(2);
-    expect(response.body[0].name).toBe(organizationTestData.organization1.name);
-    expect(response.body[1].name).toBe(organizationTestData.organization2.name);
+    expect(response.body.organizations[0].name).toBe(organizationTestData.organization1.name);
+    expect(response.body.organizations[1].name).toBe(organizationTestData.organization2.name);
   });
 
   it("should get an organization by ID", async () => {
