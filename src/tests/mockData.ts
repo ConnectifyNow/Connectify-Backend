@@ -7,6 +7,13 @@ export const userTest = {
   withCreation: true,
 };
 
+export const userTest2 = {
+  username: "testuser2",
+  email: "testuser2@example.com",
+  password: "password",
+  role: 0,
+  withCreation: true,
+};
 // skill tests data
 export const skillTestData = {
   skill1: { name: "JavaScript" },

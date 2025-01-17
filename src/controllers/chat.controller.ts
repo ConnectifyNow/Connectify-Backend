@@ -8,7 +8,7 @@ const getConversations = async (req: Request, res: Response) => {
     const { _id: userId } = req.user;
 
     const conversations = await ChatModel.find({
-      users: { $in: [userId] }
+      users: { $in: [userId] },
     }).populate("users", ["_id", "username", "role"]);
 
     res.status(200).json(conversations);
@@ -24,7 +24,7 @@ const getConversationWith = async (req: Request, res: Response) => {
 
     const conversation = await ChatModel.findOneAndUpdate(
       {
-        users: { $all: [userId, anotherUserId] }
+        users: { $all: [userId, anotherUserId] },
       },
       { openedAt: new Date() }
     );
@@ -38,23 +38,22 @@ const getConversationWith = async (req: Request, res: Response) => {
 const getMessages = async (req: Request, res: Response) => {
   try {
     const { id: conversationId } = req.params;
-
-    const conversation = await ChatModel.findByIdAndUpdate(conversationId, {
-      openedAt: new Date()
+    const conversation = await ChatModel.findById(conversationId, {
+      openedAt: new Date(),
     }).populate({
       path: "messages",
       model: MessageModel,
       populate: {
         path: "sender",
         model: UserModel,
-        select: ["_id", "username", "role"]
-      }
+        select: ["_id", "username", "role"],
+      },
     });
 
     if (conversation) {
       res.status(200).json(conversation.messages);
     } else {
-      throw new Error("Failed to find conversation");
+      res.status(404).json({ message: "Conversation not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -69,12 +68,12 @@ const addConversation = async (req: Request, res: Response) => {
     const currentUser = await UserModel.findById(userId).select([
       "_id",
       "username",
-      "role"
+      "role",
     ]);
     const otherUser = await UserModel.findById(otherUserId).select([
       "_id",
       "username",
-      "role"
+      "role",
     ]);
     if (!otherUser) {
       return res
@@ -85,7 +84,7 @@ const addConversation = async (req: Request, res: Response) => {
     const users = [userId, otherUserId].sort();
 
     const existingConversation = await ChatModel.findOne({
-      users: { $all: users }
+      users: { $all: users },
     });
 
     if (existingConversation) {
@@ -94,13 +93,13 @@ const addConversation = async (req: Request, res: Response) => {
 
     const newConversation = await ChatModel.create({
       users: users,
-      messages: []
+      messages: [],
     });
 
     const conversation = {
       users: [currentUser, otherUser],
       messages: [],
-      _id: newConversation._id
+      _id: newConversation._id,
     };
 
     res.status(200).json(conversation);
@@ -113,5 +112,5 @@ export default {
   getConversations,
   getConversationWith,
   getMessages,
-  addConversation
+  addConversation,
 };
