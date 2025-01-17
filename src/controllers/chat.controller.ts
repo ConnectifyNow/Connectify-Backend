@@ -54,7 +54,7 @@ const getMessages = async (req: Request, res: Response) => {
     if (conversation) {
       res.status(200).json(conversation.messages);
     } else {
-      throw new Error("Failed to find conversation");
+      res.status(404).json({ message: "Conversation not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
