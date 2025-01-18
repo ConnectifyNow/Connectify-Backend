@@ -22,7 +22,11 @@ export class PostController extends BaseController<IPost> {
         }
         query = { _id: req.params.postId };
       }
-      const posts = await this.model.find(query).populate("user").exec();
+      const posts = await this.model
+        .find(query)
+        .sort({ createdAt: -1 })
+        .populate("user")
+        .exec();
       if (posts.length === 0) {
         return res.status(404).json({ message: "No posts found" });
       }
@@ -34,12 +38,12 @@ export class PostController extends BaseController<IPost> {
 
           if (user.role === Role.Volunteer) {
             userAdditionalDetails = await VolunteerModel.findOne({
-              userId: user._id,
+              userId: user._id
             });
             userKey = "volunteer";
           } else if (user.role === Role.Organization) {
             userAdditionalDetails = await OrganizationModel.findOne({
-              userId: user._id,
+              userId: user._id
             });
             userKey = "organization";
           }
@@ -56,12 +60,12 @@ export class PostController extends BaseController<IPost> {
 
               if (commentUser.role === Role.Volunteer) {
                 commentUserAdditionalDetails = await VolunteerModel.findOne({
-                  userId: commentUser._id,
+                  userId: commentUser._id
                 });
                 commentUserKey = "volunteer";
               } else if (commentUser.role === Role.Organization) {
                 commentUserAdditionalDetails = await OrganizationModel.findOne({
-                  userId: commentUser._id,
+                  userId: commentUser._id
                 });
                 commentUserKey = "organization";
               }
@@ -70,8 +74,8 @@ export class PostController extends BaseController<IPost> {
                 ...comment.toObject(),
                 user: {
                   ...commentUser.toObject(),
-                  [commentUserKey]: commentUserAdditionalDetails,
-                },
+                  [commentUserKey]: commentUserAdditionalDetails
+                }
               };
             })
           );
@@ -80,9 +84,9 @@ export class PostController extends BaseController<IPost> {
             ...post.toObject(),
             user: {
               ...user.toObject(),
-              [userKey]: userAdditionalDetails,
+              [userKey]: userAdditionalDetails
             },
-            comments: commentsWithUserInfo,
+            comments: commentsWithUserInfo
           };
         })
       );
