@@ -9,7 +9,7 @@
     "dev": "nodemon -x ts-node src/server.ts",
     "lint": "npx eslint .",
     "fill-db": "npx ts-node tools/fill-db.ts",
-    "prod": "cp .envprod .env && tsc -p tsconfig_prod.json && pm2 restart ecosystem.config.js --env production",
+    "prod": "cp .envprod .env && tsc -p tsconfig_prod.json && node ./dist/src/server.js",
     "prod1": "cp .envprod .env && tsc -p tsconfig_prod.json &&  node ./dist/src/server.js"
   },
   "keywords": [],
