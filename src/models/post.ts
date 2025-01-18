@@ -17,7 +17,11 @@ const PostSchema: Schema = new Schema({
   content: { type: String, required: true },
   date: { type: String },
   skills: [{ type: String, ref: "Skill", required: true }],
-  likes: [{ type: Schema.Types.ObjectId, ref: "User" }]
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 export default mongoose.model<IPost>("Post", PostSchema);
