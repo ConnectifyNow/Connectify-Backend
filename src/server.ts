@@ -23,7 +23,7 @@ initApp().then((app) => {
         {
           url:
             process.env.NODE_ENV === "production"
-              ? "https://node95.cs.colman.ac.il"
+              ? "https://node30.cs.colman.ac.il"
               : "http://localhost:" + process.env.PORT
         }
       ],
