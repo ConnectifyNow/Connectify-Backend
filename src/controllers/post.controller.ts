@@ -15,13 +15,27 @@ export class PostController extends BaseController<IPost> {
 
   getPostsOverview = async (req: Request, res: Response) => {
     try {
-      let query = {};
+      let query: { _id?: string; skills?: { $in: string[] } } = {};
       if (req.params.postId) {
         if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
           return res.status(400).send({ error: "Invalid user id format" });
         }
-        query = { _id: req.params.postId };
+        query._id = req.params.postId;
       }
+
+      if (req.query.skills) {
+        const skills = Array.isArray(req.query.skills)
+          ? req.query.skills.join(",") // Handle array case
+          : req.query.skills; // Otherwise, it's a string or undefined
+
+        if (typeof skills === "string") {
+          const skillsArray = skills.split(","); // Split the string into an array
+          query.skills = { $in: skillsArray };
+        }
+      }
+
+      //TODO: add type filter like skills
+
       const posts = await this.model
         .find(query)
         .sort({ createdAt: -1 })
@@ -30,7 +44,8 @@ export class PostController extends BaseController<IPost> {
       if (posts.length === 0) {
         return res.status(404).json({ message: "No posts found" });
       }
-      const postsWithUserInfo = await Promise.all(
+
+      let postsWithUserInfo = await Promise.all(
         posts.map(async (post) => {
           const user = post.user as unknown as IUser;
           let userAdditionalDetails = null;
@@ -38,12 +53,12 @@ export class PostController extends BaseController<IPost> {
 
           if (user.role === Role.Volunteer) {
             userAdditionalDetails = await VolunteerModel.findOne({
-              userId: user._id
+              userId: user._id,
             });
             userKey = "volunteer";
           } else if (user.role === Role.Organization) {
             userAdditionalDetails = await OrganizationModel.findOne({
-              userId: user._id
+              userId: user._id,
             });
             userKey = "organization";
           }
@@ -60,12 +75,12 @@ export class PostController extends BaseController<IPost> {
 
               if (commentUser.role === Role.Volunteer) {
                 commentUserAdditionalDetails = await VolunteerModel.findOne({
-                  userId: commentUser._id
+                  userId: commentUser._id,
                 });
                 commentUserKey = "volunteer";
               } else if (commentUser.role === Role.Organization) {
                 commentUserAdditionalDetails = await OrganizationModel.findOne({
-                  userId: commentUser._id
+                  userId: commentUser._id,
                 });
                 commentUserKey = "organization";
               }
@@ -74,8 +89,8 @@ export class PostController extends BaseController<IPost> {
                 ...comment.toObject(),
                 user: {
                   ...commentUser.toObject(),
-                  [commentUserKey]: commentUserAdditionalDetails
-                }
+                  [commentUserKey]: commentUserAdditionalDetails,
+                },
               };
             })
           );
@@ -84,9 +99,9 @@ export class PostController extends BaseController<IPost> {
             ...post.toObject(),
             user: {
               ...user.toObject(),
-              [userKey]: userAdditionalDetails
+              [userKey]: userAdditionalDetails,
             },
-            comments: commentsWithUserInfo
+            comments: commentsWithUserInfo,
           };
         })
       );

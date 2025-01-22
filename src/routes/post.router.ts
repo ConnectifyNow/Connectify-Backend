@@ -63,7 +63,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/:postId?", authMiddleware, postController.getPostsOverview);
+router.get("/:postId?", postController.getPostsOverview);
 
 /**
  * @swagger
