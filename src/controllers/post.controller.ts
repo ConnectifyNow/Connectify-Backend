@@ -25,11 +25,11 @@ export class PostController extends BaseController<IPost> {
 
       if (req.query.skills) {
         const skills = Array.isArray(req.query.skills)
-          ? req.query.skills.join(",") // Handle array case
-          : req.query.skills; // Otherwise, it's a string or undefined
+          ? req.query.skills.join(",")
+          : req.query.skills;
 
         if (typeof skills === "string") {
-          const skillsArray = skills.split(","); // Split the string into an array
+          const skillsArray = skills.split(",");
           query.skills = { $in: skillsArray };
         }
       }
