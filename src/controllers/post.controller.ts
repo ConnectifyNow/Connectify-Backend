@@ -34,10 +34,21 @@ export class PostController extends BaseController<IPost> {
         }
       }
 
+      const skip = req.query.skip ? parseInt(req.query.skip as string, 10) : 0; // Default to 0 if not provided
+      const top = req.query.top ? parseInt(req.query.top as string, 10) : 5; // Default to 5 if not provided
+      const totalPosts = await this.model.countDocuments(query);
+      console.log("totalPosts", totalPosts);
+      console.log("skip", skip);
+      if (skip >= totalPosts) {
+        return res.json([]); // Return an empty array if skip exceeds the total number of posts
+      }
+
       //TODO: add type filter like skills
 
       const posts = await this.model
         .find(query)
+        .skip(skip)
+        .limit(top)
         .sort({ createdAt: -1 })
         .populate("user")
         .exec();
@@ -47,18 +58,21 @@ export class PostController extends BaseController<IPost> {
 
       let postsWithUserInfo = await Promise.all(
         posts.map(async (post) => {
-          const user = post.user as unknown as IUser;
+          // const user = post.user as unknown as IUser;
           let userAdditionalDetails = null;
           let userKey = "";
-
-          if (user.role === Role.Volunteer) {
+          //@ts-ignore
+          if (post.user.role === Role.Volunteer) {
             userAdditionalDetails = await VolunteerModel.findOne({
-              userId: user._id,
+              //@ts-ignore
+              userId: post.user._id,
             });
             userKey = "volunteer";
-          } else if (user.role === Role.Organization) {
+            //@ts-ignore
+          } else if (post.user.role === Role.Organization) {
             userAdditionalDetails = await OrganizationModel.findOne({
-              userId: user._id,
+              //@ts-ignore
+              userId: post.user._id,
             });
             userKey = "organization";
           }
@@ -98,7 +112,8 @@ export class PostController extends BaseController<IPost> {
           return {
             ...post.toObject(),
             user: {
-              ...user.toObject(),
+              //@ts-ignore
+              ...post.user.toObject(),
               [userKey]: userAdditionalDetails,
             },
             comments: commentsWithUserInfo,
