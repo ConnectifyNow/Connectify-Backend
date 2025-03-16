@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export class AiController {
   getAiDescription = async (req: Request, res: Response) => {
@@ -10,33 +10,23 @@ export class AiController {
         return res.status(400).json({ message: "org name is required" });
       }
 
-      const openai = new OpenAI({
-        dangerouslyAllowBrowser: true,
-        apiKey: process.env.AI_KEY,
-      });
+      const genAI = new GoogleGenerativeAI(process.env.AI_KEY);
 
-      const completion = openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        store: true,
-        messages: [
-          {
-            role: "user",
-            content: `generate description for an organization called ${orgName} without headers, straight description`,
-          },
-        ],
-      });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-      completion.then((result) => {
-        if (result.choices[0].message.content !== null) {
-          res
-            .status(200)
-            .json({ description: result.choices[0].message.content });
-        }
-      });
+      const prompt = `generate description for an organization called ${orgName} without headers, straight description`;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+
+      return res.status(200).json({ description: text });
     } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Error processing AI request", error });
+      console.error("Error processing Gemini AI request:", error);
+      return res.status(500).json({ 
+        message: "Error processing AI request", 
+        error: error.message || "Unknown error" 
+      });
     }
   };
 }
