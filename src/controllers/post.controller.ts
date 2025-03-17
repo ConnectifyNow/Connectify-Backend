@@ -15,7 +15,11 @@ export class PostController extends BaseController<IPost> {
 
   getPostsOverview = async (req: Request, res: Response) => {
     try {
-      let query: { _id?: string; skills?: { $in: string[] } } = {};
+      let query: {
+        _id?: string;
+        postType?: string;
+        skills?: { $in: string[] };
+      } = {};
       if (req.params.postId) {
         if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
           return res.status(400).send({ error: "Invalid user id format" });
@@ -32,6 +36,10 @@ export class PostController extends BaseController<IPost> {
           const skillsArray = skills.split(",");
           query.skills = { $in: skillsArray };
         }
+      }
+
+      if (req.query.postType) {
+        query.postType = req.query.postType as string;
       }
 
       const skip = req.query.skip ? parseInt(req.query.skip as string, 10) : 0; // Default to 0 if not provided
