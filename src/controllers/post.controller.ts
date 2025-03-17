@@ -38,9 +38,10 @@ export class PostController extends BaseController<IPost> {
         }
       }
 
-      if (req.query.postType) {
-        query.postType = req.query.postType as string;
-      }
+      //TODO: implement postType filter
+      // if (req.query.postType) {
+      //   query.postType = req.query.postType as string;
+      // }
 
       const skip = req.query.skip ? parseInt(req.query.skip as string, 10) : 0; // Default to 0 if not provided
       const top = req.query.top ? parseInt(req.query.top as string, 10) : 5; // Default to 5 if not provided
