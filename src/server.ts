@@ -69,8 +69,13 @@ initApp().then((app) => {
       console.error("Error creating server:", err.message);
     });
 
-  const io = new SocketServer({ cors: { origin: "*" } }).listen(server);
-
+    const io = new SocketServer(server, { 
+      cors: { 
+        origin: "*" 
+      },
+      path: '/socket.io/'
+    });
+    
   async function addUserToSocketDataIfAuthenticated(
     socket: Socket,
     next: (err?: Error) => void
