@@ -12,35 +12,41 @@ export class OrganizationController extends BaseController<IOrganization> {
   getOrganizationOverview = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    const searchTerm = (req.query.search as string) || "";
     const skip = (page - 1) * limit;
     const { id } = req.params;
 
     if (id) {
       if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send({ error: "Invalid organization ID" });
+        return res.status(400).send({ error: "Invalid organization ID" });
       }
 
       const organization = await this.model
-      .findById(id)
-      .select([
-        "userId",
-        "city",
-        "name",
-        "description",
-        "imageUrl",
-        "focusAreas",
-        "websiteLink"
-      ]);
+        .findById(id)
+        .select([
+          "userId",
+          "city",
+          "name",
+          "description",
+          "imageUrl",
+          "focusAreas",
+          "websiteLink",
+        ]);
 
       if (!organization) {
-      return res.status(404).json({ message: "Organization not found" });
+        return res.status(404).json({ message: "Organization not found" });
       }
 
       return res.status(200).json(organization);
     }
+
     try {
+      const searchFilter = searchTerm
+        ? { name: { $regex: searchTerm, $options: "i" } }
+        : {};
+
       const organizations = await this.model
-        .find()
+        .find(searchFilter)
         .skip(skip)
         .limit(limit)
         .select([
@@ -50,14 +56,14 @@ export class OrganizationController extends BaseController<IOrganization> {
           "description",
           "imageUrl",
           "focusAreas",
-          "websiteLink"
+          "websiteLink",
         ]);
 
-      const total = await this.model.countDocuments();
+      const total = await this.model.countDocuments(searchFilter);
 
       res.status(200).json({
         organizations,
-        pages: Math.ceil(total / limit)
+        pages: Math.ceil(total / limit),
       });
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -89,7 +95,7 @@ export class OrganizationController extends BaseController<IOrganization> {
     try {
       const organization = new this.model({
         ...req.body,
-        imageUrl: imageUrl || randomAvatarUrl()
+        imageUrl: imageUrl || randomAvatarUrl(),
       });
 
       await organization.save();

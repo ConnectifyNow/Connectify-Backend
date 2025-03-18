@@ -13,38 +13,49 @@ export class VolunteerController extends BaseController<IVolunteer> {
   getVolunteerOverview = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    const searchTerm = req.query.search as string || '';
     const skip = (page - 1) * limit;
     const { id } = req.params;
-
+  
     if (id) {
       if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send({ error: "Invalid volunteer ID" });
+        return res.status(400).send({ error: "Invalid volunteer ID" });
       }
-
+      
       try {
-      const volunteer = await VolunteerModel.findById(id).select([
-        "userId",
-        "firstName",
-        "lastName",
-        "phone",
-        "city",
-        "age",
-        "skills",
-        "imageUrl",
-        "about"
-      ]);
-
-      if (!volunteer) {
-        return res.status(404).json({ message: "Volunteer not found" });
-      }
-
-      return res.status(200).json(volunteer);
+        const volunteer = await VolunteerModel.findById(id).select([
+          "userId",
+          "firstName",
+          "lastName",
+          "phone",
+          "city",
+          "age",
+          "skills",
+          "imageUrl",
+          "about"
+        ]);
+  
+        if (!volunteer) {
+          return res.status(404).json({ message: "Volunteer not found" });
+        }
+  
+        return res.status(200).json(volunteer);
       } catch (err) {
-      return res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
       }
     }
+    
     try {
-      const volunteers = await VolunteerModel.find()
+      const searchFilter = searchTerm 
+        ? { 
+            $or: [
+              { firstName: { $regex: searchTerm, $options: 'i' } },
+              { lastName: { $regex: searchTerm, $options: 'i' } }
+            ] 
+          } 
+        : {};
+      
+      const volunteers = await VolunteerModel.find(searchFilter)
         .skip(skip)
         .limit(limit)
         .select([
@@ -58,9 +69,9 @@ export class VolunteerController extends BaseController<IVolunteer> {
           "imageUrl",
           "about"
         ]);
-
-      const total = await VolunteerModel.countDocuments();
-
+  
+      const total = await VolunteerModel.countDocuments(searchFilter);
+  
       res.status(200).json({
         volunteers,
         pages: Math.ceil(total / limit)
