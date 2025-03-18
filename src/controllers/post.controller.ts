@@ -6,7 +6,7 @@ import UserModel, { IUser } from "../models/user";
 import VolunteerModel from "../models/volunteer";
 import OrganizationModel from "../models/organization";
 import { BaseController } from "./base.controller";
-import { Role } from "../types";
+import { PostType, Role } from "../types";
 
 export class PostController extends BaseController<IPost> {
   constructor(model: Model<IPost>) {
@@ -17,7 +17,6 @@ export class PostController extends BaseController<IPost> {
     try {
       let query: {
         _id?: string;
-        postType?: string;
         skills?: { $in: string[] };
       } = {};
       if (req.params.postId) {
@@ -38,7 +37,6 @@ export class PostController extends BaseController<IPost> {
         }
       }
 
-      //TODO: implement postType filter
       // if (req.query.postType) {
       //   query.postType = req.query.postType as string;
       // }
@@ -46,13 +44,9 @@ export class PostController extends BaseController<IPost> {
       const skip = req.query.skip ? parseInt(req.query.skip as string, 10) : 0; // Default to 0 if not provided
       const top = req.query.top ? parseInt(req.query.top as string, 10) : 5; // Default to 5 if not provided
       const totalPosts = await this.model.countDocuments(query);
-      console.log("totalPosts", totalPosts);
-      console.log("skip", skip);
       if (skip >= totalPosts) {
-        return res.json([]); // Return an empty array if skip exceeds the total number of posts
+        return res.json([]);
       }
-
-      //TODO: add type filter like skills
 
       const posts = await this.model
         .find(query)
@@ -66,68 +60,78 @@ export class PostController extends BaseController<IPost> {
       }
 
       let postsWithUserInfo = await Promise.all(
-        posts.map(async (post) => {
-          // const user = post.user as unknown as IUser;
-          let userAdditionalDetails = null;
-          let userKey = "";
-          //@ts-ignore
-          if (post.user.role === Role.Volunteer) {
-            userAdditionalDetails = await VolunteerModel.findOne({
-              //@ts-ignore
-              userId: post.user._id,
-            });
-            userKey = "volunteer";
-            //@ts-ignore
-          } else if (post.user.role === Role.Organization) {
-            userAdditionalDetails = await OrganizationModel.findOne({
-              //@ts-ignore
-              userId: post.user._id,
-            });
-            userKey = "organization";
-          }
+        posts
+          .filter((post) => {
+            if (req.query.postType === PostType.All) return true;
+            else if (req.query.postType === PostType.My) {
+              return (
+                `${(post.user as unknown as IUser)._id}` === req.query.userId
+              );
+            } else {
+              const type = req.query.postType === "volunteer" ? 0 : 1;
+              return (post.user as unknown as IUser).role == type;
+            }
+          })
+          .map(async (post) => {
+            let userAdditionalDetails = null;
+            let userKey = "";
+            if ((post.user as unknown as IUser).role === Role.Volunteer) {
+              userAdditionalDetails = await VolunteerModel.findOne({
+                userId: (post.user as unknown as IUser)._id,
+              });
+              userKey = "volunteer";
+            } else if (
+              (post.user as unknown as IUser).role === Role.Organization
+            ) {
+              userAdditionalDetails = await OrganizationModel.findOne({
+                userId: (post.user as unknown as IUser)._id,
+              });
+              userKey = "organization";
+            }
 
-          const comments = await CommentModel.find({ post: post._id })
-            .populate("user")
-            .exec();
+            const comments = await CommentModel.find({ post: post._id })
+              .populate("user")
+              .exec();
 
-          const commentsWithUserInfo = await Promise.all(
-            comments.map(async (comment) => {
-              const commentUser = comment.user as unknown as IUser;
-              let commentUserAdditionalDetails = null;
-              let commentUserKey = "";
+            const commentsWithUserInfo = await Promise.all(
+              comments.map(async (comment) => {
+                const commentUser = comment.user as unknown as IUser;
+                let commentUserAdditionalDetails = null;
+                let commentUserKey = "";
 
-              if (commentUser.role === Role.Volunteer) {
-                commentUserAdditionalDetails = await VolunteerModel.findOne({
-                  userId: commentUser._id,
-                });
-                commentUserKey = "volunteer";
-              } else if (commentUser.role === Role.Organization) {
-                commentUserAdditionalDetails = await OrganizationModel.findOne({
-                  userId: commentUser._id,
-                });
-                commentUserKey = "organization";
-              }
+                if (commentUser.role === Role.Volunteer) {
+                  commentUserAdditionalDetails = await VolunteerModel.findOne({
+                    userId: commentUser._id,
+                  });
+                  commentUserKey = "volunteer";
+                } else if (commentUser.role === Role.Organization) {
+                  commentUserAdditionalDetails =
+                    await OrganizationModel.findOne({
+                      userId: commentUser._id,
+                    });
+                  commentUserKey = "organization";
+                }
 
-              return {
-                ...comment.toObject(),
-                user: {
-                  ...commentUser.toObject(),
-                  [commentUserKey]: commentUserAdditionalDetails,
-                },
-              };
-            })
-          );
+                return {
+                  ...comment.toObject(),
+                  user: {
+                    ...commentUser.toObject(),
+                    [commentUserKey]: commentUserAdditionalDetails,
+                  },
+                };
+              })
+            );
 
-          return {
-            ...post.toObject(),
-            user: {
-              //@ts-ignore
-              ...post.user.toObject(),
-              [userKey]: userAdditionalDetails,
-            },
-            comments: commentsWithUserInfo,
-          };
-        })
+            return {
+              ...post.toObject(),
+              user: {
+                //@ts-ignore
+                ...post.user.toObject(),
+                [userKey]: userAdditionalDetails,
+              },
+              comments: commentsWithUserInfo,
+            };
+          })
       );
 
       return res.status(200).json(postsWithUserInfo);
