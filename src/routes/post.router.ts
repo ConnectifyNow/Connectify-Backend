@@ -67,6 +67,39 @@ router.get("/:postId?", authMiddleware, postController.getPostsOverview);
 
 /**
  * @swagger
+ * /api/posts/user/{userId}:
+ *   get:
+ *     summary: Get posts by user ID
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The id of the user
+ *     responses:
+ *       200:
+ *         description: List of posts for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Post'
+ *       400:
+ *         description: Invalid user ID
+ *       404:
+ *         description: No posts found for this user
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/:userId", authMiddleware, postController.getPostsByUserId);
+
+/**
+ * @swagger
  * /api/posts:
  *   post:
  *     summary: Create a new post
