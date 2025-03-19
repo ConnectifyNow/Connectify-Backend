@@ -98,26 +98,6 @@ export class PostController extends BaseController<IPost> {
     }
   };
 
-  getPostsByUserId = async (req: Request, res: Response) => {
-    try {
-      const userId = req.params.userId;
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).send({ error: "Invalid user id format" });
-      }
-      if (!userId) {
-        return res.status(400).send({ error: "User id is required" });
-      }
-      const posts = await PostModel.find({ userId });
-
-      if (!posts) {
-        return res.status(404).json({ message: "Posts not found" });
-      }
-      return res.status(200).json(posts);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-  };
-
   likePost = async (req: Request, res: Response) => {
     try {
       const postId = req.params.postId;
